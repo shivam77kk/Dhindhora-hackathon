@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import api from '@/lib/api';
+import useAuthStore from '@/store/authStore';
 import CursorEffect from '@/components/ui/CursorEffect';
 import ScrollProgress from '@/components/ui/ScrollProgress';
 import GlowButton from '@/components/ui/GlowButton';
@@ -12,6 +13,7 @@ import { MessageSquare, Send } from 'lucide-react';
 const NOTE_COLORS = ['#6C63FF', '#EC4899', '#06B6D4', '#10B981', '#F97316', '#8B5CF6'];
 
 export default function CommunityPage() {
+  const { user } = useAuthStore();
   const [notes, setNotes] = useState([]);
   const [newNote, setNewNote] = useState('');
   const [author, setAuthor] = useState('');
@@ -35,7 +37,21 @@ export default function CommunityPage() {
       <nav className="fixed top-0 w-full z-50 glass border-b border-white/5">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3"><div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-neon-pink flex items-center justify-center font-bold">D</div><span className="font-display text-xl font-bold gradient-text">Dhindhora</span></Link>
-          <div className="flex items-center gap-3"><Link href="/login" className="text-white/70 text-sm px-4 py-2">Login</Link><GlowButton href="/register">Get Started</GlowButton></div>
+          <div className="flex items-center gap-3">
+            {user ? (
+              <Link href="/dashboard" className="flex items-center gap-3 glass px-4 py-2 rounded-xl text-sm hover:bg-white/10 transition-all border border-white/10">
+                <div className="w-6 h-6 rounded-full bg-brand-500 flex items-center justify-center text-[10px] font-bold overflow-hidden">
+                  {user.avatar ? <img src={user.avatar} alt="" className="w-full h-full object-cover" /> : user.name?.[0].toUpperCase()}
+                </div>
+                <span>Dashboard</span>
+              </Link>
+            ) : (
+              <>
+                <Link href="/login" className="text-white/70 text-sm px-4 py-2">Login</Link>
+                <GlowButton href="/register">Get Started</GlowButton>
+              </>
+            )}
+          </div>
         </div>
       </nav>
       <div className="pt-24 pb-12 px-6 max-w-5xl mx-auto">

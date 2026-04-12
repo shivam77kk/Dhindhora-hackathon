@@ -1,6 +1,9 @@
 
 module.exports = {
-  content: ['./app*.{js,jsx}', './components*.{js,jsx}'],
+  content: [
+    './app*.{js,ts,jsx,tsx,mdx}',
+    './components*.{js,ts,jsx,tsx,mdx}',
+  ],
   darkMode: 'class',
   theme: {
     extend: {
