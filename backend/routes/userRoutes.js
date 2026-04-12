@@ -1,0 +1,10 @@
+import express from 'express';
+import { getProfile, updateProfile, uploadAvatar, getPublicProfile } from '../controllers/userController.js';
+import { protect } from '../middleware/authMiddleware.js';
+import { uploadMiddleware } from '../middleware/uploadMiddleware.js';
+const router = express.Router();
+router.get('/profile', protect, getProfile);
+router.put('/profile', protect, updateProfile);
+router.post('/avatar', protect, uploadMiddleware.single('avatar'), uploadAvatar);
+router.get('/:username', getPublicProfile);
+export default router;
