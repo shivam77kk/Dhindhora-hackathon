@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import api from '@/lib/api';
 import toast from 'react-hot-toast';
 
-// html2canvas is imported lazily to avoid SSR issues
+
 async function captureCard(element) {
   const { default: html2canvas } = await import('html2canvas');
   return html2canvas(element, {
@@ -13,7 +13,7 @@ async function captureCard(element) {
     useCORS: true,
     allowTaint: false,
     logging: false,
-    // Ignore elements that can't be captured (backdrop-filter)
+    
     ignoreElements: (el) => el.classList?.contains('h2c-ignore'),
   });
 }
@@ -25,8 +25,8 @@ const LEVELS = [
 ];
 
 export default function RoastEngine() {
-  const [mode, setMode]             = useState('solo');   // 'solo' | 'battle'
-  const [step, setStep]             = useState('input');  // 'input' | 'loading' | 'result' | 'battle'
+  const [mode, setMode]             = useState('solo');   
+  const [step, setStep]             = useState('input');  
   const [form, setForm]             = useState({ name: '', traits: '', roastLevel: 'medium' });
   const [battleForm, setBattleForm] = useState({
     person1: { name: '', traits: '' },
@@ -109,7 +109,7 @@ export default function RoastEngine() {
 
   return (
     <div className="w-full max-w-2xl mx-auto space-y-4">
-      {/* Mode tabs */}
+      {}
       <div className="flex gap-2 p-1 glass rounded-xl border border-white/10">
         {[{ id: 'solo', label: '🎯 Solo Roast' }, { id: 'battle', label: '⚔️ Roast Battle' }].map(m => (
           <button
@@ -127,7 +127,7 @@ export default function RoastEngine() {
       </div>
 
       <AnimatePresence mode="wait">
-        {/* ── SOLO INPUT ──────────────────────────────────────────────────── */}
+        {}
         {step === 'input' && mode === 'solo' && (
           <motion.div key="solo-input" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
             className="glass rounded-2xl p-6 space-y-5 border border-white/10"
@@ -193,7 +193,7 @@ export default function RoastEngine() {
           </motion.div>
         )}
 
-        {/* ── BATTLE INPUT ─────────────────────────────────────────────────── */}
+        {}
         {step === 'input' && mode === 'battle' && (
           <motion.div key="battle-input" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
             className="glass rounded-2xl p-6 space-y-5 border border-white/10"
@@ -235,7 +235,7 @@ export default function RoastEngine() {
           </motion.div>
         )}
 
-        {/* ── LOADING ──────────────────────────────────────────────────────── */}
+        {}
         {step === 'loading' && (
           <motion.div key="loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             className="glass rounded-2xl p-14 text-center border border-white/10"
@@ -250,12 +250,12 @@ export default function RoastEngine() {
           </motion.div>
         )}
 
-        {/* ── SOLO RESULT ──────────────────────────────────────────────────── */}
+        {}
         {step === 'result' && result && (
           <motion.div key="result" initial={{ opacity: 0, scale: 0.92 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0 }}
             className="space-y-4"
           >
-            {/* Capture card — use inline styles NOT tailwind for html2canvas reliability */}
+            {}
             <div
               ref={cardRef}
               style={{
@@ -265,7 +265,7 @@ export default function RoastEngine() {
                 border: '1px solid rgba(168,85,247,0.3)',
               }}
             >
-              {/* Header */}
+              {}
               <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 16 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
                   <span style={{ fontSize: 48 }}>{result.emoji}</span>
@@ -282,19 +282,19 @@ export default function RoastEngine() {
                 </div>
               </div>
 
-              {/* Roast block */}
+              {}
               <div style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.25)', borderRadius: 12, padding: 14, marginBottom: 10 }}>
                 <div style={{ color: '#f87171', fontSize: 11, fontWeight: 700, marginBottom: 6 }}>🔥 THE ROAST</div>
                 <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: 14, lineHeight: 1.6, margin: 0 }}>{result.roast}</p>
               </div>
 
-              {/* Praise block */}
+              {}
               <div style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.25)', borderRadius: 12, padding: 14, marginBottom: 16 }}>
                 <div style={{ color: '#34d399', fontSize: 11, fontWeight: 700, marginBottom: 6 }}>💚 THE PRAISE</div>
                 <p style={{ color: 'rgba(255,255,255,0.85)', fontSize: 14, lineHeight: 1.6, margin: 0 }}>{result.praise}</p>
               </div>
 
-              {/* Stats grid */}
+              {}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 16 }}>
                 {[
                   { label: 'SUPERPOWER', value: result.superpower, color: '#a855f7' },
@@ -310,7 +310,7 @@ export default function RoastEngine() {
               <div style={{ textAlign: 'center', color: 'rgba(255,255,255,0.2)', fontSize: 11 }}>Made with 🔥 on Dhindhora</div>
             </div>
 
-            {/* Action buttons */}
+            {}
             <div className="flex gap-3">
               <motion.button
                 whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
@@ -336,7 +336,7 @@ export default function RoastEngine() {
           </motion.div>
         )}
 
-        {/* ── BATTLE RESULT ────────────────────────────────────────────────── */}
+        {}
         {step === 'battle' && battleData && (
           <motion.div key="battle-result" initial={{ opacity: 0, scale: 0.92 }} animate={{ opacity: 1, scale: 1 }}
             className="glass rounded-2xl p-6 border border-white/10 space-y-4"

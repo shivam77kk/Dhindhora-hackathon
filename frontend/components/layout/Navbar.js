@@ -35,7 +35,7 @@ export default function Navbar() {
     }`}>
       <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
         
-        {/* Logo */}
+        {}
         <Link href="/" className="flex items-center gap-3 group">
           <motion.div 
             whileHover={{ scale: 1.1, rotate: 5 }}
@@ -48,7 +48,7 @@ export default function Navbar() {
           </span>
         </Link>
 
-        {/* Desktop Links */}
+        {}
         <div className="hidden lg:flex items-center gap-6">
           <div className="flex items-center gap-1 bg-white/5 rounded-full p-1 border border-white/5">
             {NAV_LINKS.map(link => (
@@ -81,7 +81,7 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Auth Actions */}
+        {}
         <div className="flex items-center gap-3">
           <Link href="/login" className="hidden sm:block text-white/50 hover:text-white text-sm px-4 py-2 transition-colors">
             Login
@@ -90,7 +90,7 @@ export default function Navbar() {
             Get Started
           </GlowButton>
           
-          {/* Mobile toggle */}
+          {}
           <button 
             className="lg:hidden w-10 h-10 flex flex-col items-center justify-center gap-1.5"
             onClick={() => setMobileMenu(!mobileMenu)}
@@ -102,7 +102,7 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {}
       <AnimatePresence>
         {mobileMenu && (
           <motion.div

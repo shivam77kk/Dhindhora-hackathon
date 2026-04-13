@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import dynamic from 'next/dynamic';
 
-// Dynamic imports for heavy components
+
 const AirDrawingCanvas       = dynamic(() => import('../air-canvas/AirDrawingCanvas'), { ssr: false });
 const EmotionWorldUpgraded   = dynamic(() => import('../ai/EmotionWorldUpgraded'), { ssr: false });
 const AvatarMirror           = dynamic(() => import('../avatar/AvatarMirror'), { ssr: false });
@@ -22,7 +22,7 @@ export default function FeatureDrawer({ webreelId }) {
 
   return (
     <>
-      {/* Floating Toggle Button */}
+      {}
       <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
@@ -32,7 +32,7 @@ export default function FeatureDrawer({ webreelId }) {
         {isOpen ? '✕' : '🎪'}
       </motion.button>
 
-      {/* Drawer Overlay */}
+      {}
       <AnimatePresence>
         {isOpen && (
           <>
@@ -58,7 +58,7 @@ export default function FeatureDrawer({ webreelId }) {
                 <button onClick={() => setIsOpen(false)} className="text-white/20 hover:text-white/60">✕ Close</button>
               </div>
 
-              {/* Feature Selection Grid */}
+              {}
               <div className="grid grid-cols-2 gap-3 mb-8">
                 {FEATURES.map(f => (
                   <button
@@ -80,7 +80,7 @@ export default function FeatureDrawer({ webreelId }) {
                 ))}
               </div>
 
-              {/* Active Component Area */}
+              {}
               <div className="flex-1 overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-white/10">
                 <AnimatePresence mode="wait">
                   {!activeTab && (
@@ -121,7 +121,7 @@ export default function FeatureDrawer({ webreelId }) {
                 </AnimatePresence>
               </div>
 
-              {/* Footer info */}
+              {}
               <div className="mt-8 pt-6 border-t border-white/5 flex items-center justify-between text-[10px] text-white/20 italic">
                 <span>Collaborative Socket Connection: ACTIVE</span>
                 <span>Dhindhora AI v2.4</span>

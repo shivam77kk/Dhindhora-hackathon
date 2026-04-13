@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import api from '@/lib/api';
 import toast from 'react-hot-toast';
 
-// Local command map — matched instantly without API call
+
 const LOCAL_COMMANDS = {
   'next':       { action: 'scroll-next',      emoji: '⏭️' },
   'forward':    { action: 'scroll-next',      emoji: '⏭️' },
@@ -34,11 +34,11 @@ function executeAction(action, router) {
       window.scrollBy({ top: -window.innerHeight * 0.85, behavior: 'smooth' });
       break;
     case 'confetti': {
-      // Use canvas-confetti if available, else fallback
+      
       if (typeof window !== 'undefined' && window.confetti) {
         window.confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
       } else {
-        // Dynamic import fallback
+        
         import('canvas-confetti').then(({ default: confetti }) => {
           confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
         }).catch(() => {});
@@ -64,14 +64,14 @@ function executeAction(action, router) {
 export default function VoiceController({ onCommand, enabled = true }) {
   const [listening, setListening]     = useState(false);
   const [transcript, setTranscript]   = useState('');
-  const [flash, setFlash]             = useState(null);  // { emoji, action }
+  const [flash, setFlash]             = useState(null);  
   const [showHUD, setShowHUD]         = useState(false);
   const [supported, setSupported]     = useState(true);
   const recognitionRef  = useRef(null);
-  const listeningRef    = useRef(false); // ref version to avoid stale closure
+  const listeningRef    = useRef(false); 
   const router = useRouter();
 
-  // Check browser support on mount
+  
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -82,14 +82,14 @@ export default function VoiceController({ onCommand, enabled = true }) {
     const lower = text.toLowerCase().trim();
     setTranscript(lower);
 
-    // 1. Try local match first (instant, no API)
+    
     for (const [keyword, cmd] of Object.entries(LOCAL_COMMANDS)) {
       if (lower.includes(keyword)) {
         setFlash(cmd);
         setTimeout(() => setFlash(null), 2000);
         executeAction(cmd.action, router);
         if (onCommand) onCommand(cmd.action, lower);
-        // Speak back
+        
         if (window.speechSynthesis) {
           const phrases = {
             'confetti': 'Woooo!', 'scroll-next': 'Next!', 'scroll-back': 'Going back!',
@@ -105,7 +105,7 @@ export default function VoiceController({ onCommand, enabled = true }) {
       }
     }
 
-    // 2. Fallback: AI interpretation for complex/natural language commands
+    
     try {
       const { data } = await api.post('/voice/interpret', {
         transcript: lower,
@@ -124,7 +124,7 @@ export default function VoiceController({ onCommand, enabled = true }) {
         }
       }
     } catch {
-      // Silently fail — voice commands are a bonus feature
+      
     }
   }, [router, onCommand]);
 
@@ -138,7 +138,7 @@ export default function VoiceController({ onCommand, enabled = true }) {
     const recognition = new SR();
     recognition.continuous = true;
     recognition.interimResults = true;
-    recognition.lang = 'en-IN'; // Works for Indian English + standard English
+    recognition.lang = 'en-IN'; 
     recognition.maxAlternatives = 1;
 
     recognition.onresult = (event) => {
@@ -157,7 +157,7 @@ export default function VoiceController({ onCommand, enabled = true }) {
     };
 
     recognition.onerror = (event) => {
-      // 'no-speech' and 'aborted' are expected — don't show errors for these
+      
       if (event.error === 'not-allowed') {
         toast.error('Microphone permission denied!');
         setListening(false);
@@ -166,9 +166,9 @@ export default function VoiceController({ onCommand, enabled = true }) {
     };
 
     recognition.onend = () => {
-      // Auto-restart if still supposed to be listening
+      
       if (listeningRef.current) {
-        try { recognition.start(); } catch { /* already started */ }
+        try { recognition.start(); } catch {  }
       }
     };
 
@@ -199,14 +199,14 @@ export default function VoiceController({ onCommand, enabled = true }) {
     else startListening();
   };
 
-  // Cleanup on unmount
+  
   useEffect(() => () => stopListening(), [stopListening]);
 
   if (!enabled || !supported) return null;
 
   return (
     <>
-      {/* Floating mic button */}
+      {}
       <motion.div
         className="fixed bottom-24 right-6 z-50"
         initial={{ scale: 0, opacity: 0 }}
@@ -214,7 +214,7 @@ export default function VoiceController({ onCommand, enabled = true }) {
         transition={{ delay: 1.5, type: 'spring', stiffness: 200 }}
       >
         <div className="relative">
-          {/* Ripple rings when listening */}
+          {}
           {listening && [0.8, 1.6, 2.4].map((delay, i) => (
             <motion.div
               key={i}
@@ -240,7 +240,7 @@ export default function VoiceController({ onCommand, enabled = true }) {
         </div>
       </motion.div>
 
-      {/* HUD panel */}
+      {}
       <AnimatePresence>
         {showHUD && (
           <motion.div
@@ -249,7 +249,7 @@ export default function VoiceController({ onCommand, enabled = true }) {
             exit={{ opacity: 0, x: 30, scale: 0.95 }}
             className="fixed bottom-[9.5rem] right-6 z-50 w-72 glass rounded-2xl p-4 border border-white/10 shadow-xl"
           >
-            {/* Header */}
+            {}
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
                 <span className="text-sm font-bold text-white">🎤 Voice Commands</span>
@@ -258,14 +258,14 @@ export default function VoiceController({ onCommand, enabled = true }) {
               <button onClick={() => setShowHUD(false)} className="text-white/30 hover:text-white/70 text-xs">✕</button>
             </div>
 
-            {/* Transcript */}
+            {}
             {transcript && (
               <div className="mb-3 glass rounded-lg px-3 py-2 text-white/55 text-xs italic border border-white/5">
                 "{transcript}"
               </div>
             )}
 
-            {/* Flash indicator */}
+            {}
             <AnimatePresence>
               {flash && (
                 <motion.div
@@ -280,7 +280,7 @@ export default function VoiceController({ onCommand, enabled = true }) {
               )}
             </AnimatePresence>
 
-            {/* Command grid */}
+            {}
             <div className="grid grid-cols-2 gap-1.5 max-h-56 overflow-y-auto">
               {[
                 { say: '"next"',    emoji: '⏭️', does: 'Scroll down' },

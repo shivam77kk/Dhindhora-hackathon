@@ -6,7 +6,7 @@ import { OrbitControls, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import toast from 'react-hot-toast';
 
-// ── Emotion configs ──────────────────────────────────────────────────────────
+
 const EMOTION_CFG = {
   happy:     { color: '#f59e0b', glow: '#fbbf24', emoji: '😄', scale: 1.05 },
   sad:       { color: '#60a5fa', glow: '#93c5fd', emoji: '😢', scale: 0.97 },
@@ -17,7 +17,7 @@ const EMOTION_CFG = {
   neutral:   { color: '#8b5cf6', glow: '#7c3aed', emoji: '😐', scale: 1.0  },
 };
 
-// ── 3D Avatar component (no external fonts needed) ───────────────────────────
+
 function Avatar3D({ emotion, expressions }) {
   const groupRef     = useRef();
   const headRef      = useRef();
@@ -37,21 +37,21 @@ function Avatar3D({ emotion, expressions }) {
   useFrame((state) => {
     const t = state.clock.elapsedTime;
 
-    // Smooth color lerp
+    
     currentColorRef.current.lerp(targetColorRef.current, 0.04);
     if (materialRef.current) {
       materialRef.current.color.copy(currentColorRef.current);
       materialRef.current.emissive.copy(currentColorRef.current).multiplyScalar(0.15);
     }
 
-    // Idle head movement
+    
     if (headRef.current) {
       headRef.current.rotation.y = Math.sin(t * 0.5) * 0.08;
       headRef.current.rotation.x = Math.sin(t * 0.3) * 0.04;
       headRef.current.position.y = Math.sin(t * 0.9) * 0.04;
     }
 
-    // Eye blink every ~4 seconds
+    
     if (leftEyeRef.current && rightEyeRef.current) {
       const blinkCycle = Math.sin(t * 0.8);
       const blink = blinkCycle > 0.97 ? Math.max(0.05, 1 - (blinkCycle - 0.97) * 50) : 1;
@@ -59,7 +59,7 @@ function Avatar3D({ emotion, expressions }) {
       rightEyeRef.current.scale.y = blink;
     }
 
-    // Mouth opens based on happy/surprised expression
+    
     if (mouthRef.current && expressions) {
       const openAmount = (expressions.happy || 0) * 0.4 + (expressions.surprised || 0) * 0.6;
       mouthRef.current.scale.y = 0.3 + openAmount * 0.7;
@@ -69,7 +69,7 @@ function Avatar3D({ emotion, expressions }) {
 
   return (
     <group ref={groupRef}>
-      {/* Head */}
+      {}
       <mesh ref={headRef} castShadow>
         <sphereGeometry args={[1, 32, 32]} />
         <meshStandardMaterial
@@ -82,45 +82,45 @@ function Avatar3D({ emotion, expressions }) {
         />
       </mesh>
 
-      {/* Left eye white */}
+      {}
       <mesh ref={leftEyeRef} position={[-0.32, 0.22, 0.92]}>
         <sphereGeometry args={[0.13, 16, 16]} />
         <meshStandardMaterial color="white" roughness={0.5} />
       </mesh>
-      {/* Left pupil */}
+      {}
       <mesh position={[-0.32, 0.22, 1.02]}>
         <sphereGeometry args={[0.065, 12, 12]} />
         <meshStandardMaterial color="#111827" />
       </mesh>
-      {/* Left highlight */}
+      {}
       <mesh position={[-0.295, 0.245, 1.075]}>
         <sphereGeometry args={[0.02, 8, 8]} />
         <meshStandardMaterial color="white" />
       </mesh>
 
-      {/* Right eye white */}
+      {}
       <mesh ref={rightEyeRef} position={[0.32, 0.22, 0.92]}>
         <sphereGeometry args={[0.13, 16, 16]} />
         <meshStandardMaterial color="white" roughness={0.5} />
       </mesh>
-      {/* Right pupil */}
+      {}
       <mesh position={[0.32, 0.22, 1.02]}>
         <sphereGeometry args={[0.065, 12, 12]} />
         <meshStandardMaterial color="#111827" />
       </mesh>
-      {/* Right highlight */}
+      {}
       <mesh position={[0.335, 0.245, 1.075]}>
         <sphereGeometry args={[0.02, 8, 8]} />
         <meshStandardMaterial color="white" />
       </mesh>
 
-      {/* Nose */}
+      {}
       <mesh position={[0, -0.04, 1.0]}>
         <sphereGeometry args={[0.06, 12, 12]} />
         <meshStandardMaterial color={cfg.color} roughness={0.5} emissive={cfg.color} emissiveIntensity={0.1} />
       </mesh>
 
-      {/* Mouth */}
+      {}
       <mesh ref={mouthRef} position={[0, -0.28, 0.93]}>
         <capsuleGeometry args={[0.07, 0.22, 8, 16]} />
         <meshStandardMaterial
@@ -129,7 +129,7 @@ function Avatar3D({ emotion, expressions }) {
         />
       </mesh>
 
-      {/* Eyebrows — raised for surprised/happy */}
+      {}
       {[-0.32, 0.32].map((x, i) => (
         <mesh
           key={i}
@@ -141,7 +141,7 @@ function Avatar3D({ emotion, expressions }) {
         </mesh>
       ))}
 
-      {/* Emotion label (using Html from drei — no font needed) */}
+      {}
       <Html position={[0, 1.6, 0]} center distanceFactor={4}>
         <div style={{
           background: 'rgba(5,5,16,0.85)',
@@ -160,13 +160,13 @@ function Avatar3D({ emotion, expressions }) {
         </div>
       </Html>
 
-      {/* Glow point light that changes with emotion */}
+      {}
       <pointLight color={cfg.glow} intensity={0.8} distance={4} position={[0, 0, 2]} />
     </group>
   );
 }
 
-// ── Main component ───────────────────────────────────────────────────────────
+
 export default function AvatarMirror() {
   const videoRef    = useRef(null);
   const intervalRef = useRef(null);
@@ -184,14 +184,14 @@ export default function AvatarMirror() {
     setStartError('');
     setLoading(true);
     try {
-      // 1. Load face-api.js dynamically (same pattern as existing EmotionDetector.js)
+      
       const faceapi = await import('face-api.js');
       await Promise.all([
         faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
         faceapi.nets.faceExpressionNet.loadFromUri('/models'),
       ]);
 
-      // 2. Camera stream
+      
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { width: 640, height: 480, facingMode: 'user' },
       });
@@ -201,7 +201,7 @@ export default function AvatarMirror() {
       videoRef.current.play();
       setActive(true);
 
-      // 3. Detection loop every 400ms
+      
       intervalRef.current = setInterval(async () => {
         if (!videoRef.current || videoRef.current.readyState < 2) return;
         try {
@@ -212,13 +212,13 @@ export default function AvatarMirror() {
           if (det?.expressions) {
             setFaceFound(true);
             const exp = det.expressions;
-            setExpressions({ ...exp }); // plain object copy
+            setExpressions({ ...exp }); 
             const dominant = Object.entries(exp).sort((a, b) => b[1] - a[1])[0][0];
             setEmotion(dominant);
           } else {
             setFaceFound(false);
           }
-        } catch { /* detection can fail on blurry frames — ignore */ }
+        } catch {  }
       }, 400);
 
       toast.success('🧬 Avatar Mirror ready! Make expressions to see your avatar react!', { duration: 4000 });
@@ -249,7 +249,7 @@ export default function AvatarMirror() {
 
   return (
     <div className="w-full flex flex-col lg:flex-row gap-5">
-      {/* Left: camera feed */}
+      {}
       <div className="flex-1 space-y-3">
         <div
           className="relative rounded-2xl overflow-hidden border border-white/10 bg-black/50"
@@ -264,7 +264,7 @@ export default function AvatarMirror() {
             style={{ transform: 'scaleX(-1)', opacity: active ? 0.7 : 0 }}
           />
 
-          {/* Face status */}
+          {}
           {active && (
             <div className="absolute top-3 left-3 flex items-center gap-2 glass rounded-full px-3 py-1">
               <span className={`w-2 h-2 rounded-full ${faceFound ? 'bg-green-400 animate-pulse' : 'bg-red-400'}`} />
@@ -272,7 +272,7 @@ export default function AvatarMirror() {
             </div>
           )}
 
-          {/* Emotion badge */}
+          {}
           <AnimatePresence mode="wait">
             {active && faceFound && (
               <motion.div
@@ -289,7 +289,7 @@ export default function AvatarMirror() {
             )}
           </AnimatePresence>
 
-          {/* Start screen */}
+          {}
           {!active && (
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 bg-[#050510]/80">
               <motion.div animate={{ scale: [1, 1.1, 1] }} transition={{ repeat: Infinity, duration: 2 }} className="text-7xl">
@@ -313,7 +313,7 @@ export default function AvatarMirror() {
           )}
         </div>
 
-        {/* Expression bars */}
+        {}
         {active && Object.keys(expressions).length > 0 && (
           <div className="glass rounded-xl p-4 border border-white/10 space-y-2">
             <p className="text-xs text-white/40 font-bold uppercase tracking-wide">Expression Readout</p>
@@ -343,7 +343,7 @@ export default function AvatarMirror() {
         )}
       </div>
 
-      {/* Right: Three.js avatar */}
+      {}
       <div className="flex-1 space-y-3">
         <div
           className="rounded-2xl overflow-hidden border border-white/10"

@@ -7,7 +7,7 @@ export default function useSocket(webreelId, username) {
   const { socket, setSocket, setViewers } = useSocketStore();
 
   useEffect(() => {
-    // Only connect if not already connected or if we have a new ID
+    
     const socketInstance = connectSocket();
     setSocket(socketInstance);
 

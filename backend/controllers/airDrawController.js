@@ -1,7 +1,7 @@
 import { callGeminiJSON } from '../services/geminiService.js';
 import { apiSuccess, apiError } from '../utils/apiResponse.js';
 
-// POST /api/air-draw/recognize-shape
+
 export const recognizeShape = async (req, res) => {
   try {
     const { points, canvasWidth, canvasHeight } = req.body;
@@ -10,7 +10,7 @@ export const recognizeShape = async (req, res) => {
       return res.status(400).json(apiError('Need at least 4 points to recognize a shape'));
     }
 
-    // Normalize points to 0..1 range and sample max 60 points
+    
     const step = Math.max(1, Math.floor(points.length / 60));
     const sampled = points
       .filter((_, i) => i % step === 0)
@@ -35,7 +35,7 @@ Identify the MOST LIKELY shape or symbol. Respond ONLY with valid JSON — no ma
 
     const result = await callGeminiJSON(prompt, { temperature: 0.3, maxOutputTokens: 256 });
 
-    // Validate required fields with safe fallback
+    
     const safe = {
       shape: result.shape || 'unknown',
       confidence: typeof result.confidence === 'number' ? result.confidence : 0.5,
@@ -45,7 +45,7 @@ Identify the MOST LIKELY shape or symbol. Respond ONLY with valid JSON — no ma
       message: result.message || 'Cool drawing!',
     };
 
-    // Broadcast recognized shape to all collaborators in real-time
+    
     if (req.io) {
       req.io.emit('draw:shape-recognized', safe);
     }
@@ -57,7 +57,7 @@ Identify the MOST LIKELY shape or symbol. Respond ONLY with valid JSON — no ma
   }
 };
 
-// POST /api/air-draw/clear
+
 export const clearDrawingRoom = async (req, res) => {
   try {
     const { roomId } = req.body;

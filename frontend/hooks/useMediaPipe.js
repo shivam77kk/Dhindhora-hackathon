@@ -22,7 +22,7 @@ function loadAllScripts() {
     let loaded = 0;
 
     MEDIAPIPE_SCRIPTS.forEach((src) => {
-      // Don't reload if already in DOM
+      
       if (document.querySelector(`script[src="${src}"]`)) {
         loaded++;
         if (loaded === MEDIAPIPE_SCRIPTS.length) {
@@ -36,7 +36,7 @@ function loadAllScripts() {
       const script = document.createElement('script');
       script.src = src;
       script.crossOrigin = 'anonymous';
-      script.async = false; // Load in order
+      script.async = false; 
       script.onload = () => {
         loaded++;
         if (loaded === MEDIAPIPE_SCRIPTS.length) {

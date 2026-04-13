@@ -25,15 +25,12 @@ const cleanJSON = (text) => {
   }
 };
 
-/**
- * Ultimate Safety Fallback - Returns valid template data if all AI models fail.
- * This ensures the application logic (3D scenes, DB saves) still works even if API is blocked.
- */
+
 const getSafetyMockResponse = (prompt, isJSON) => {
   console.warn('🛡️ Entering Safety Mock Mode (AI API Blocked or Failed)');
   if (!isJSON) return "In the heart of the digital galaxy, our vision transcends the physical. We build not just with code, but with the stardust of potential. Dhindhora is the echo of our collective ambition.";
 
-  // Detect context from prompt to give a matching template
+  
   if (prompt.includes('webreel content') || prompt.includes('Analyze this image')) {
     return {
       topic: "Digital Innovation",
@@ -68,14 +65,11 @@ const getSafetyMockResponse = (prompt, isJSON) => {
     };
   }
 
-  // Generic JSON template
+  
   return { success: true, message: "AI response generated via Safety SOP", text: "Proceed with the galaxy mission." };
 };
 
-/**
- * Standard Operating Procedure (SOP) for Robust AI Calls
- * Cascades through multiple models and implements retries with backoff.
- */
+
 export const callAIRobust = async (prompt, type = 'text', options = {}) => {
   const { 
     temperature = 0.7, 
@@ -142,13 +136,11 @@ export const callAIRobust = async (prompt, type = 'text', options = {}) => {
     }
   }
 
-  // FINAL FAIL-SAFE: If everything failed (including 403 Forbidden), return a safety mock
+  
   return getSafetyMockResponse(prompt, isJSON);
 };
 
-/**
- * Legacy wrappers maintained for compatibility, now using the robust engine.
- */
+
 export const callGemini = (prompt, options) => callAIRobust(prompt, 'text', options);
 export const callGeminiJSON = (prompt, options) => callAIRobust(prompt, 'text', { ...options, isJSON: true });
 export const callGeminiWithImage = (prompt, base64Image, mimeType, options) => 

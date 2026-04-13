@@ -7,7 +7,7 @@ import { useSocket } from '@/hooks/useSocket';
 import api from '@/lib/api';
 import toast from 'react-hot-toast';
 
-// ── perfect-freehand path conversion (official docs implementation) ──────────
+
 function getSvgPathFromStroke(stroke) {
   if (!stroke || stroke.length < 4) return '';
   const [firstX, firstY] = stroke[0];
@@ -38,7 +38,7 @@ function drawStrokeOnCanvas(ctx, rawPoints, color, size = 8) {
   ctx.fill(path);
 }
 
-// ── Hand landmark indices ────────────────────────────────────────────────────
+
 const INDEX_TIP = 8;
 const INDEX_MCP = 5;
 const MIDDLE_TIP = 12;
@@ -50,38 +50,38 @@ const PINKY_TIP = 20;
 const COLORS = ['#a855f7', '#ec4899', '#22d3ee', '#f97316', '#84cc16', '#fbbf24', '#ffffff'];
 
 export default function AirDrawingCanvas({ roomId = 'global' }) {
-  // ── refs ──────────────────────────────────────────────────────────────────
+  
   const videoRef       = useRef(null);
   const drawCanvasRef  = useRef(null);
   const overlayRef     = useRef(null);
   const handsRef       = useRef(null);
   const cameraRef      = useRef(null);
-  const strokeRef      = useRef([]);   // current stroke points
-  const allStrokesRef  = useRef([]);   // all completed strokes {points, color}
+  const strokeRef      = useRef([]);   
+  const allStrokesRef  = useRef([]);   
   const isDrawingRef   = useRef(false);
   const lastEmitRef    = useRef(0);
 
-  // ── state ─────────────────────────────────────────────────────────────────
+  
   const [active, setActive]             = useState(false);
   const [color, setColor]               = useState('#a855f7');
   const [strokeSize, setStrokeSize]     = useState(8);
   const [recognizing, setRecognizing]   = useState(false);
   const [shapeResult, setShapeResult]   = useState(null);
   const [collaborators, setCollaborators] = useState(0);
-  const [gesture, setGesture]           = useState('none'); // 'draw' | 'pinch' | 'none'
+  const [gesture, setGesture]           = useState('none'); 
   const [startError, setStartError]     = useState('');
 
   const { ready: mediaPipeReady, error: mediaPipeError } = useMediaPipe();
   const { socket } = useSocket();
 
-  // ── Socket.io collaboration ───────────────────────────────────────────────
+  
   useEffect(() => {
     if (!socket) return;
 
     socket.emit('draw:join-room', { roomId, username: 'Artist' });
 
     const onCollaboratorJoined = () => setCollaborators(c => c + 1);
-    const onRoomJoined = () => {}; // acknowledged
+    const onRoomJoined = () => {}; 
     const onRemoteStroke = ({ points, color: c, strokeWidth }) => {
       const canvas = drawCanvasRef.current;
       if (!canvas) return;
@@ -108,7 +108,7 @@ export default function AirDrawingCanvas({ roomId = 'global' }) {
     };
   }, [socket, roomId]);
 
-  // ── Gesture detection helpers ─────────────────────────────────────────────
+  
   const isIndexUp = useCallback((lm) => {
     return lm[INDEX_TIP].y < lm[INDEX_MCP].y && lm[MIDDLE_TIP].y > lm[MIDDLE_MCP].y;
   }, []);
@@ -123,7 +123,7 @@ export default function AirDrawingCanvas({ roomId = 'global' }) {
     return [INDEX_TIP, MIDDLE_TIP, RING_TIP, PINKY_TIP].every(tip => lm[tip].y > lm[tip - 2].y);
   }, []);
 
-  // ── Hand results callback ─────────────────────────────────────────────────
+  
   const onHandResults = useCallback((results) => {
     const overlay = overlayRef.current;
     const drawCanvas = drawCanvasRef.current;
@@ -133,7 +133,7 @@ export default function AirDrawingCanvas({ roomId = 'global' }) {
     octx.clearRect(0, 0, overlay.width, overlay.height);
 
     if (!results.multiHandLandmarks || results.multiHandLandmarks.length === 0) {
-      // No hand detected — finalize any open stroke
+      
       if (isDrawingRef.current && strokeRef.current.length > 3) {
         finalizeStroke(drawCanvas);
       }
@@ -146,10 +146,10 @@ export default function AirDrawingCanvas({ roomId = 'global' }) {
     const W = overlay.width;
     const H = overlay.height;
 
-    // Draw skeleton
+    
     drawSkeleton(octx, lm, W, H);
 
-    // Finger tip position (mirrored for natural feel)
+    
     const tipX = (1 - lm[INDEX_TIP].x) * W;
     const tipY = lm[INDEX_TIP].y * H;
 
@@ -181,7 +181,7 @@ export default function AirDrawingCanvas({ roomId = 'global' }) {
     if (isIndexUp(lm)) {
       setGesture('draw');
 
-      // Cursor ring
+      
       octx.beginPath();
       octx.arc(tipX, tipY, 14, 0, Math.PI * 2);
       octx.strokeStyle = color;
@@ -190,20 +190,20 @@ export default function AirDrawingCanvas({ roomId = 'global' }) {
       octx.stroke();
       octx.globalAlpha = 1;
 
-      // Add point to current stroke
+      
       strokeRef.current.push([tipX, tipY, 0.5]);
       isDrawingRef.current = true;
 
-      // Render current stroke live on draw canvas
+      
       if (strokeRef.current.length > 1) {
         const dctx = drawCanvas.getContext('2d');
-        // Clear and redraw all strokes + current (for smooth preview)
+        
         dctx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
         allStrokesRef.current.forEach(s => drawStrokeOnCanvas(dctx, s.points, s.color, s.size));
         drawStrokeOnCanvas(dctx, strokeRef.current, color, strokeSize);
       }
 
-      // Throttled socket emit every 100ms
+      
       const now = Date.now();
       if (socket && now - lastEmitRef.current > 100 && strokeRef.current.length > 1) {
         socket.emit('draw:air-stroke', {
@@ -234,7 +234,7 @@ export default function AirDrawingCanvas({ roomId = 'global' }) {
       size: strokeSize,
     });
     strokeRef.current = [];
-    // Final render
+    
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     allStrokesRef.current.forEach(s => drawStrokeOnCanvas(ctx, s.points, s.color, s.size));
@@ -289,11 +289,11 @@ export default function AirDrawingCanvas({ roomId = 'global' }) {
 
   const handleShapeAnimation = (trigger, emoji, message) => {
     toast.success(`${emoji} ${message}`, { duration: 3500, style: { background: '#1a0530', color: '#fff', border: '1px solid #a855f7' } });
-    // Dispatch custom event for parent components to react to
+    
     window.dispatchEvent(new CustomEvent('aircanvas:shape', { detail: { trigger, emoji } }));
   };
 
-  // ── Start camera + MediaPipe ───────────────────────────────────────────────
+  
   const startCanvas = async () => {
     setStartError('');
     if (!mediaPipeReady) {
@@ -306,19 +306,19 @@ export default function AirDrawingCanvas({ roomId = 'global' }) {
     }
 
     try {
-      // Request camera permission first
+      
       const stream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480, facingMode: 'user' } });
       videoRef.current.srcObject = stream;
       await new Promise((resolve) => { videoRef.current.onloadedmetadata = resolve; });
       videoRef.current.play();
 
-      // Size canvases to match video
+      
       drawCanvasRef.current.width  = 640;
       drawCanvasRef.current.height = 480;
       overlayRef.current.width     = 640;
       overlayRef.current.height    = 480;
 
-      // Init MediaPipe Hands
+      
       const hands = new window.Hands({
         locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/${file}`,
       });
@@ -331,7 +331,7 @@ export default function AirDrawingCanvas({ roomId = 'global' }) {
       hands.onResults(onHandResults);
       handsRef.current = hands;
 
-      // Use MediaPipe Camera utility for consistent frame rate
+      
       const camera = new window.Camera(videoRef.current, {
         onFrame: async () => {
           if (handsRef.current && videoRef.current) {
@@ -355,7 +355,7 @@ export default function AirDrawingCanvas({ roomId = 'global' }) {
     }
   };
 
-  // ── Stop camera ───────────────────────────────────────────────────────────
+  
   const stopCanvas = () => {
     cameraRef.current?.stop();
     handsRef.current?.close();
@@ -375,20 +375,20 @@ export default function AirDrawingCanvas({ roomId = 'global' }) {
     if (socket) socket.emit('draw:air-clear', { roomId });
   };
 
-  // ── Manual recognize button ───────────────────────────────────────────────
+  
   const manualRecognize = () => {
     const canvas = drawCanvasRef.current;
     if (canvas) recognizeDrawing(canvas);
   };
 
-  // Cleanup on unmount
+  
   useEffect(() => () => stopCanvas(), []);
 
   const gestureLabel = { draw: '✏️ Drawing', pinch: '🤏 Recognizing...', fist: '✊ Paused', none: '🖐️ Show index finger' }[gesture] || '';
 
   return (
     <div className="w-full space-y-4">
-      {/* MediaPipe status */}
+      {}
       {!mediaPipeReady && !mediaPipeError && (
         <div className="glass rounded-xl p-3 flex items-center gap-3 border border-white/10">
           <span className="w-3 h-3 rounded-full border-2 border-brand-500 border-t-transparent animate-spin" />
@@ -401,10 +401,10 @@ export default function AirDrawingCanvas({ roomId = 'global' }) {
         </div>
       )}
 
-      {/* Canvas Container */}
+      {}
       <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-black/60" style={{ paddingTop: '75%' }}>
         <div className="absolute inset-0">
-          {/* Camera feed (mirrored, subtle) */}
+          {}
           <video
             ref={videoRef}
             autoPlay
@@ -414,34 +414,34 @@ export default function AirDrawingCanvas({ roomId = 'global' }) {
             style={{ transform: 'scaleX(-1)', opacity: active ? 0.18 : 0 }}
           />
 
-          {/* Drawing canvas */}
+          {}
           <canvas
             ref={drawCanvasRef}
             className="absolute inset-0 w-full h-full"
             style={{ mixBlendMode: 'screen' }}
           />
 
-          {/* Hand skeleton overlay */}
+          {}
           <canvas
             ref={overlayRef}
             className="absolute inset-0 w-full h-full pointer-events-none"
           />
 
-          {/* Gesture status badge */}
+          {}
           {active && gesture !== 'none' && (
             <div className="absolute top-3 left-1/2 -translate-x-1/2 glass rounded-full px-4 py-1.5 text-sm font-semibold text-white border border-white/10">
               {gestureLabel}
             </div>
           )}
 
-          {/* Collaborators badge */}
+          {}
           {collaborators > 0 && (
             <div className="absolute top-3 right-3 glass rounded-full px-3 py-1 text-xs text-white/70">
               👥 {collaborators + 1} drawing
             </div>
           )}
 
-          {/* Recognizing overlay */}
+          {}
           <AnimatePresence>
             {recognizing && (
               <motion.div
@@ -460,7 +460,7 @@ export default function AirDrawingCanvas({ roomId = 'global' }) {
             )}
           </AnimatePresence>
 
-          {/* Start screen */}
+          {}
           {!active && (
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-5 bg-[#050510]/80">
               <motion.div
@@ -490,9 +490,9 @@ export default function AirDrawingCanvas({ roomId = 'global' }) {
         </div>
       </div>
 
-      {/* Controls bar */}
+      {}
       <div className="flex flex-wrap items-center gap-3">
-        {/* Color picker */}
+        {}
         <div className="flex gap-2 items-center">
           {COLORS.map((c) => (
             <button
@@ -507,7 +507,7 @@ export default function AirDrawingCanvas({ roomId = 'global' }) {
           ))}
         </div>
 
-        {/* Stroke size */}
+        {}
         <input
           type="range"
           min={4}
@@ -549,7 +549,7 @@ export default function AirDrawingCanvas({ roomId = 'global' }) {
         </div>
       </div>
 
-      {/* Gesture guide */}
+      {}
       <div className="grid grid-cols-3 gap-2">
         {[
           { emoji: '☝️', name: 'Index Up', action: 'Draw freely' },
@@ -564,7 +564,7 @@ export default function AirDrawingCanvas({ roomId = 'global' }) {
         ))}
       </div>
 
-      {/* Shape Result */}
+      {}
       <AnimatePresence>
         {shapeResult && (
           <motion.div

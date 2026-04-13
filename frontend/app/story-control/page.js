@@ -17,7 +17,7 @@ export default function StoryControlPage() {
     if (!input.trim()) return;
     setMessages(prev => [...prev, { role: 'user', content: input }]);
     setInput('');
-    // Simulate AI response
+    
     setTimeout(() => {
       setMessages(prev => [...prev, { role: 'ai', content: "The world shifts as your words take form. The shadows recede, leaving only the stardust of your intentions.", emoji: '🌌' }]);
     }, 1200);
@@ -34,7 +34,7 @@ export default function StoryControlPage() {
       <div className="relative z-10 max-w-6xl mx-auto px-6 pt-32 pb-20">
         <div className="flex flex-col lg:flex-row gap-8">
           
-          {/* Left: Emotion World Control */}
+          {}
           <div className="flex-1 lg:sticky lg:top-32 h-fit">
             <header className="mb-8">
               <h1 className="text-4xl font-black text-white mb-2">Story <span className="gradient-text">Alchemist</span></h1>
@@ -56,14 +56,14 @@ export default function StoryControlPage() {
             </div>
           </div>
 
-          {/* Right: Interactive Story Feed */}
+          {}
           <div className="flex-[1.5] flex flex-col h-[700px] glass rounded-3xl border border-white/10 overflow-hidden">
             <div className="p-5 border-b border-white/10 flex items-center justify-between bg-white/5">
               <span className="text-sm font-bold text-white uppercase tracking-tighter">Hyper-Interactive Narrative</span>
               <span className="text-[10px] text-white/30">Gemini 1.5 Flash Enabled</span>
             </div>
 
-            {/* Messages */}
+            {}
             <div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-thin">
               {messages.map((m, i) => (
                 <motion.div
@@ -84,7 +84,7 @@ export default function StoryControlPage() {
               ))}
             </div>
 
-            {/* Input area */}
+            {}
             <form onSubmit={appendStory} className="p-4 bg-black/40 border-t border-white/10 flex gap-2">
               <input
                 value={input}

@@ -8,7 +8,7 @@ const AirDrawingCanvas = dynamic(() => import('@/components/air-canvas/AirDrawin
 export default function AirCanvasPage() {
   return (
     <main className="min-h-screen bg-[#050510] relative overflow-hidden">
-      {/* Background stardust effects */}
+      {}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-brand-500/10 rounded-full blur-[120px]" />
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-neon-pink/10 rounded-full blur-[120px]" />

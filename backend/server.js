@@ -19,6 +19,14 @@ import musicRoutes from './routes/musicRoutes.js';
 import airDrawRoutes from './routes/airDrawRoutes.js';
 import roastRoutes from './routes/roastRoutes.js';
 import voiceRoutes from './routes/voiceRoutes.js';
+import aiRoutes from './routes/aiRoutes.js';
+import authRoutes from './routes/authRoutes.js';
+import userRoutes from './routes/userRoutes.js';
+import communityRoutes from './routes/communityRoutes.js';
+import leaderboardRoutes from './routes/leaderboardRoutes.js';
+import predictionRoutes from './routes/predictionRoutes.js';
+import reactionRoutes from './routes/reactionRoutes.js';
+import webreelRoutes from './routes/webreelRoutes.js';
 
 dotenv.config();
 
@@ -49,6 +57,14 @@ app.use('/api/music', musicRoutes);
 app.use('/api/air-draw', airDrawRoutes);
 app.use('/api/roast', roastRoutes);
 app.use('/api/voice', voiceRoutes);
+app.use('/api/ai', aiRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/community', communityRoutes);
+app.use('/api/leaderboard', leaderboardRoutes);
+app.use('/api/prediction', predictionRoutes);
+app.use('/api/reactions', reactionRoutes);
+app.use('/api/webreels', webreelRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ success: true, message: '🚀 Dhindhora Anti-Gravity AI is LIVE!', timestamp: new Date() });

@@ -88,7 +88,7 @@ export const setupSocketHandlers = (io) => {
       });
     });
 
-    // ── AIR CANVAS EVENTS ──────────────────────────────────────────────────
+    
 
     socket.on('draw:join-room', ({ roomId, username }) => {
       const room = `draw:${roomId}`;
@@ -107,20 +107,20 @@ export const setupSocketHandlers = (io) => {
       socket.to(`draw:${roomId}`).emit('draw:air-clear', { roomId });
     });
 
-    // ── ROAST EVENTS ────────────────────────────────────────────────────────────
+    
 
     socket.on('roast:request-leaderboard', async () => {
       socket.emit('roast:leaderboard-refresh', { requested: true });
     });
 
-    // ── VOICE EVENTS ────────────────────────────────────────────────────────────
+    
 
     socket.on('voice:command-broadcast', ({ webreelId, command, username }) => {
       if (!webreelId) return;
       socket.to(webreelId).emit('voice:command-received', { command, username, socketId: socket.id });
     });
 
-    // ── EMOTION BROADCAST ───────────────────────────────────────────────────────
+    
 
     socket.on('emotion:broadcast', ({ webreelId, emotion, intensity }) => {
       if (!webreelId) return;

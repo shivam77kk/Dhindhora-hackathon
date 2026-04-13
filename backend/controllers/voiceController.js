@@ -4,7 +4,7 @@ import { apiSuccess, apiError } from '../utils/apiResponse.js';
 const VALID_ACTIONS = ['scroll-next', 'scroll-back', 'confetti', 'stop-music', 'play-music',
   'navigate-roast', 'navigate-draw', 'navigate-story', 'navigate-home', 'unknown'];
 
-// POST /api/voice/interpret
+
 export const interpretVoiceCommand = async (req, res) => {
   try {
     const { transcript, currentPage } = req.body;

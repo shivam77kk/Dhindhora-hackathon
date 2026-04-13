@@ -8,7 +8,7 @@ const AvatarMirror = dynamic(() => import('@/components/avatar/AvatarMirror'), {
 export default function AvatarMirrorPage() {
   return (
     <main className="min-h-screen bg-[#050510] relative overflow-hidden">
-      {/* Background stardust */}
+      {}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-[600px] bg-brand-500/5 rounded-full blur-[150px]" />
       </div>

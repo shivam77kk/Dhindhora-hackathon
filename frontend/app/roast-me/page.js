@@ -7,7 +7,7 @@ import RoastLeaderboard from '@/components/roast/RoastLeaderboard';
 export default function RoastPage() {
   return (
     <main className="min-h-screen bg-[#050510] relative overflow-hidden">
-      {/* Background gradients */}
+      {}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-red-600/10 rounded-full blur-[150px]" />
         <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-orange-600/10 rounded-full blur-[150px]" />
@@ -18,7 +18,7 @@ export default function RoastPage() {
       <div className="relative z-10 max-w-6xl mx-auto px-6 pt-32 pb-20">
         <div className="flex flex-col lg:flex-row gap-12 items-start">
           
-          {/* Left Side: Roast Engine */}
+          {}
           <div className="flex-[1.4] space-y-10">
             <header>
               <motion.h1
@@ -54,7 +54,7 @@ export default function RoastPage() {
             </div>
           </div>
 
-          {/* Right Side: Leaderboard */}
+          {}
           <div className="flex-1 w-full lg:sticky lg:top-32">
             <RoastLeaderboard />
           </div>

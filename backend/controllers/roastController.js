@@ -2,7 +2,7 @@ import { callGeminiJSON } from '../services/geminiService.js';
 import { apiSuccess, apiError } from '../utils/apiResponse.js';
 import RoastEntry from '../models/RoastEntry.js';
 
-// POST /api/roast/generate
+
 export const generateRoast = async (req, res) => {
   try {
     const { name, traits, roastLevel } = req.body;
@@ -39,7 +39,7 @@ Respond ONLY with valid JSON — no markdown, no backticks, no extra text:
 
     const result = await callGeminiJSON(prompt, { temperature: 0.92, maxOutputTokens: 512 });
 
-    // Validate and sanitize all fields
+    
     const safe = {
       roast:         result.roast         || `${name} is so unique, even AI is confused.`,
       praise:        result.praise        || `${name} brings genuine energy to everything.`,
@@ -52,14 +52,14 @@ Respond ONLY with valid JSON — no markdown, no backticks, no extra text:
       shareText:     result.shareText     || `${name} just got roasted on Dhindhora!`,
     };
 
-    // Persist to MongoDB
+    
     const entry = await RoastEntry.create({
       name: name.trim(),
       roastLevel: level,
       ...safe,
     });
 
-    // Broadcast to all connected users for live leaderboard
+    
     if (req.io) {
       req.io.emit('roast:new-entry', {
         _id: entry._id,
@@ -80,7 +80,7 @@ Respond ONLY with valid JSON — no markdown, no backticks, no extra text:
   }
 };
 
-// GET /api/roast/leaderboard
+
 export const getRoastLeaderboard = async (req, res) => {
   try {
     const entries = await RoastEntry.find()
@@ -95,7 +95,7 @@ export const getRoastLeaderboard = async (req, res) => {
   }
 };
 
-// POST /api/roast/battle
+
 export const roastBattle = async (req, res) => {
   try {
     const { person1, person2 } = req.body;
@@ -141,7 +141,7 @@ Respond ONLY with valid JSON — no markdown, no extra text:
 
     const result = await callGeminiJSON(prompt, { temperature: 0.92, maxOutputTokens: 1024 });
 
-    // Validate rounds array
+    
     if (!Array.isArray(result.rounds) || result.rounds.length === 0) {
       throw new Error('Invalid battle format from AI');
     }

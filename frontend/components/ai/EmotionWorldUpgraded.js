@@ -15,7 +15,7 @@ const EMOTION_THEMES = {
   disgusted: { emoji:'🤢', bg:'from-green-900/30 to-teal-900/20',    border:'#10b981', particle:'#34d399', label:'Strange Vibes',      music:'weird',      effects:['wobble'] },
 };
 
-// Canvas-based particle engine
+
 function useParticleEngine(canvasRef, theme) {
   const animFrameRef = useRef(null);
   const particlesRef = useRef([]);
@@ -89,7 +89,7 @@ export default function EmotionWorldUpgraded({ webreelId, broadcastEmotion = fal
   const theme = EMOTION_THEMES[emotion] || EMOTION_THEMES.neutral;
   const { startParticles, stopParticles } = useParticleEngine(canvasRef, theme);
 
-  // Socket: receive emotion changes from other viewers
+  
   useEffect(() => {
     if (!socket || !webreelId) return;
     const handler = ({ emotion: e }) => {
@@ -101,7 +101,7 @@ export default function EmotionWorldUpgraded({ webreelId, broadcastEmotion = fal
     return () => socket.off('emotion:world-change', handler);
   }, [socket, webreelId, emotion]);
 
-  // Restart particles when emotion changes
+  
   useEffect(() => {
     if (active) {
       startParticles(theme);
@@ -109,7 +109,7 @@ export default function EmotionWorldUpgraded({ webreelId, broadcastEmotion = fal
         setShaking(true);
         setTimeout(() => setShaking(false), 600);
       }
-      // Dispatch to audio player
+      
       document.dispatchEvent(new CustomEvent('emotion:changed', { detail: { emotion, theme } }));
     }
   }, [emotion, active, theme, startParticles]);
@@ -147,22 +147,22 @@ export default function EmotionWorldUpgraded({ webreelId, broadcastEmotion = fal
               setEmotion(dominant);
               setHistory(h => [{ emotion: dominant, time: new Date().toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit' }) }, ...h.slice(0, 4)]);
 
-              // Broadcast to other viewers
+              
               if (broadcastEmotion && socket && webreelId) {
                 socket.emit('emotion:broadcast', { webreelId, emotion: dominant });
               }
 
-              // Fetch AI theme
+              
               try {
                 const intensity = Math.round((det.expressions[dominant] || 0.5) * 10);
                 const { data } = await api.post('/ai/emotion-theme', { emotion: dominant, intensity });
                 if (data?.data) setAiTheme(data.data);
-              } catch { /* non-blocking */ }
+              } catch {  }
             }
           } else {
             setFaceFound(false);
           }
-        } catch { /* frame skip — safe to ignore */ }
+        } catch {  }
       }, 2000);
 
       toast.success('🎭 Emotion World activated! Try different expressions!', { duration: 3500 });
@@ -194,7 +194,7 @@ export default function EmotionWorldUpgraded({ webreelId, broadcastEmotion = fal
       style={{ borderColor: theme.border + '55' }}
     >
       <div className="p-5 space-y-4">
-        {/* Header */}
+        {}
         <div className="flex items-center justify-between">
           <h3 className="font-display text-base font-bold gradient-text flex items-center gap-2">
             🎭 Emotion World
@@ -211,7 +211,7 @@ export default function EmotionWorldUpgraded({ webreelId, broadcastEmotion = fal
           </AnimatePresence>
         </div>
 
-        {/* Video + particles */}
+        {}
         <div className="relative rounded-xl overflow-hidden bg-black/50" style={{ height: 180 }}>
           <video
             ref={videoRef}
@@ -221,7 +221,7 @@ export default function EmotionWorldUpgraded({ webreelId, broadcastEmotion = fal
           />
           <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" />
 
-          {/* Glow overlay */}
+          {}
           {active && (
             <div
               className="absolute inset-0 pointer-events-none transition-all duration-1000"
@@ -229,7 +229,7 @@ export default function EmotionWorldUpgraded({ webreelId, broadcastEmotion = fal
             />
           )}
 
-          {/* Start button overlay */}
+          {}
           {!active && (
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/60">
               <span className="text-4xl">{theme.emoji}</span>
@@ -245,7 +245,7 @@ export default function EmotionWorldUpgraded({ webreelId, broadcastEmotion = fal
             </div>
           )}
 
-          {/* Face status */}
+          {}
           {active && (
             <div className="absolute top-2 left-2 glass rounded-full px-2 py-0.5 flex items-center gap-1.5">
               <span className={`w-1.5 h-1.5 rounded-full ${faceFound ? 'bg-green-400 animate-pulse' : 'bg-red-400'}`} />
@@ -254,7 +254,7 @@ export default function EmotionWorldUpgraded({ webreelId, broadcastEmotion = fal
           )}
         </div>
 
-        {/* Active emotion status */}
+        {}
         {active && (
           <AnimatePresence mode="wait">
             <motion.div
@@ -284,7 +284,7 @@ export default function EmotionWorldUpgraded({ webreelId, broadcastEmotion = fal
           </AnimatePresence>
         )}
 
-        {/* Emotion history trail */}
+        {}
         {history.length > 0 && (
           <div>
             <p className="text-xs text-white/30 mb-1.5">Recent emotions</p>
