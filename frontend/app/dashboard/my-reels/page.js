@@ -10,7 +10,7 @@ export default function MyReelsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    api.get('/weboreels/my/reels').then(res => setReels(res.data.data || [])).catch(() => toast.error('Failed to load reels')).finally(() => setLoading(false));
+    api.get('/webreels/my/reels').then(res => setReels(res.data.data || [])).catch(() => toast.error('Failed to load reels')).finally(() => setLoading(false));
   }, []);
 
   if (loading) return <div className="flex items-center justify-center h-64"><div className="portal-ring w-16 h-16 animate-spin" /></div>;

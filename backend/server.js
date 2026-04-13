@@ -62,7 +62,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/community', communityRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
-app.use('/api/prediction', predictionRoutes);
+app.use('/api/predictions', predictionRoutes);
 app.use('/api/reactions', reactionRoutes);
 app.use('/api/webreels', webreelRoutes);
 

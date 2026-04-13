@@ -177,6 +177,7 @@ export default function AvatarMirror() {
   const [faceFound, setFaceFound]   = useState(false);
   const [loading, setLoading]       = useState(false);
   const [startError, setStartError] = useState('');
+  const [modelMissing, setModelMissing] = useState(false);
 
   const EMOJI_MAP = { happy:'😄', sad:'😢', angry:'😡', surprised:'😮', neutral:'😐', fearful:'😨', disgusted:'🤢' };
 
@@ -186,10 +187,16 @@ export default function AvatarMirror() {
     try {
       
       const faceapi = await import('face-api.js');
-      await Promise.all([
-        faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
-        faceapi.nets.faceExpressionNet.loadFromUri('/models'),
-      ]);
+      try {
+        await Promise.all([
+          faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
+          faceapi.nets.faceExpressionNet.loadFromUri('/models'),
+        ]);
+      } catch (err) {
+        console.error('FaceAPI Models missing:', err);
+        setModelMissing(true);
+        throw new Error('AI models not found in /public/models. Please ensure models are installed.');
+      }
 
       
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -299,15 +306,22 @@ export default function AvatarMirror() {
               <p className="text-white/50 text-sm text-center px-6">
                 Your face becomes a 3D avatar. Every expression you make, it mirrors.
               </p>
+              {modelMissing && (
+                <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-3 mx-6 mb-2">
+                  <p className="text-red-400 text-[10px] leading-tight text-center">
+                    ⚠️ AI Models missing in `public/models`. Feature disabled.
+                  </p>
+                </div>
+              )}
               {startError && <p className="text-red-400 text-xs px-4 text-center">{startError}</p>}
               <motion.button
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.96 }}
+                whileHover={modelMissing ? {} : { scale: 1.04 }}
+                whileTap={modelMissing ? {} : { scale: 0.96 }}
                 onClick={startMirror}
-                disabled={loading}
-                className="px-7 py-3 rounded-full bg-gradient-to-r from-brand-500 to-cyan-500 text-white font-bold shadow-lg shadow-brand-500/30 disabled:opacity-50"
+                disabled={loading || modelMissing}
+                className="px-7 py-3 rounded-full bg-gradient-to-r from-brand-500 to-cyan-500 text-white font-bold shadow-lg shadow-brand-500/30 disabled:opacity-30 disabled:grayscale"
               >
-                {loading ? '⏳ Loading AI...' : '🧬 Activate Mirror'}
+                {loading ? '⏳ Loading AI...' : modelMissing ? '🧬 Mirror Offline' : '🧬 Activate Mirror'}
               </motion.button>
             </div>
           )}

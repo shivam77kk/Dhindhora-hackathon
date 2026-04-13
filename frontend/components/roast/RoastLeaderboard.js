@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useSocket } from '@/hooks/useSocket';
+import useSocket from '@/hooks/useSocket';
 import api from '@/lib/api';
 
 export default function RoastLeaderboard() {

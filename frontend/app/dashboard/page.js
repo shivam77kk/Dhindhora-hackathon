@@ -22,7 +22,7 @@ export default function DashboardPage() {
   const fetchData = async () => {
     try {
       const [reelsRes, lbRes] = await Promise.allSettled([
-        api.get('/weboreels/my/reels'),
+        api.get('/webreels/my/reels'),
         api.get('/leaderboard'),
       ]);
       setReels(reelsRes.status === 'fulfilled' ? (reelsRes.value.data.data?.slice(0, 3) || []) : []);

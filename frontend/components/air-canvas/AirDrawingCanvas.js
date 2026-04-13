@@ -3,7 +3,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getStroke } from 'perfect-freehand';
 import { useMediaPipe } from '@/hooks/useMediaPipe';
-import { useSocket } from '@/hooks/useSocket';
+import useSocket from '@/hooks/useSocket';
 import api from '@/lib/api';
 import toast from 'react-hot-toast';
 

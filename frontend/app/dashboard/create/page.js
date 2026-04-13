@@ -73,7 +73,7 @@ export default function CreatePage() {
     if (!form.title || !form.category) return toast.error('Title and category are required');
     setLoading(true);
     try {
-      const { data } = await api.post('/weboreels', { title: form.title, tagline: form.tagline, category: form.category, content: generatedContent || {}, colorPalette: form.colorPalette, musicMood: form.musicMood, createdFrom: mode === 'multimodal' ? form.uploadedFileType || 'photo' : 'manual' });
+      const { data } = await api.post('/webreels', { title: form.title, tagline: form.tagline, category: form.category, content: generatedContent || {}, colorPalette: form.colorPalette, musicMood: form.musicMood, createdFrom: mode === 'multimodal' ? form.uploadedFileType || 'photo' : 'manual' });
       const reelId = data.data._id;
 
       if (form.addMarket && form.marketQuestion) {
@@ -84,7 +84,7 @@ export default function CreatePage() {
       }
 
       await api.post('/music/generate', { emotion: generatedContent?.emotion || 'excited', topic: form.title, colorPalette: form.colorPalette, musicMood: form.musicMood, webreelId: reelId }).catch(() => {});
-      await api.post(`/weboreels/${reelId}/publish`);
+      await api.post(`/webreels/${reelId}/publish`);
       await api.post('/leaderboard/score', { webreelScore: 50 }).catch(() => {});
 
       confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#6C63FF', '#EC4899', '#06B6D4'] });

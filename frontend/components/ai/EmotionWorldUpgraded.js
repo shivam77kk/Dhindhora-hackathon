@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useSocket } from '@/hooks/useSocket';
+import useSocket from '@/hooks/useSocket';
 import api from '@/lib/api';
 import toast from 'react-hot-toast';
 
@@ -84,6 +84,7 @@ export default function EmotionWorldUpgraded({ webreelId, broadcastEmotion = fal
   const [history, setHistory]   = useState([]);
   const [shaking, setShaking]   = useState(false);
   const [aiTheme, setAiTheme]   = useState(null);
+  const [modelMissing, setModelMissing] = useState(false);
 
   const { socket } = useSocket();
   const theme = EMOTION_THEMES[emotion] || EMOTION_THEMES.neutral;
@@ -118,10 +119,16 @@ export default function EmotionWorldUpgraded({ webreelId, broadcastEmotion = fal
     setLoading(true);
     try {
       const faceapi = await import('face-api.js');
-      await Promise.all([
-        faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
-        faceapi.nets.faceExpressionNet.loadFromUri('/models'),
-      ]);
+      try {
+        await Promise.all([
+          faceapi.nets.tinyFaceDetector.loadFromUri('/models'),
+          faceapi.nets.faceExpressionNet.loadFromUri('/models'),
+        ]);
+      } catch (err) {
+        console.error('FaceAPI Models missing:', err);
+        setModelMissing(true);
+        throw new Error('AI models not found. Feature disabled.');
+      }
 
       const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
       streamRef.current = stream;
@@ -233,14 +240,19 @@ export default function EmotionWorldUpgraded({ webreelId, broadcastEmotion = fal
           {!active && (
             <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-black/60">
               <span className="text-4xl">{theme.emoji}</span>
+              {modelMissing && (
+                <p className="text-red-400 text-[10px] text-center px-4 bg-red-500/10 py-1 rounded-lg border border-red-500/20">
+                  ⚠️ Models missing. Offline mode.
+                </p>
+              )}
               <motion.button
-                whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }}
+                whileHover={modelMissing ? {} : { scale: 1.04 }} whileTap={modelMissing ? {} : { scale: 0.96 }}
                 onClick={startDetection}
-                disabled={loading}
-                className="px-5 py-2 rounded-full text-white font-bold text-sm shadow-lg disabled:opacity-50"
+                disabled={loading || modelMissing}
+                className="px-5 py-2 rounded-full text-white font-bold text-sm shadow-lg disabled:opacity-30 disabled:grayscale"
                 style={{ background: `linear-gradient(135deg, ${theme.border}, ${theme.particle})` }}
               >
-                {loading ? '⏳ Loading...' : '🎭 Activate Emotion World'}
+                {loading ? '⏳ Loading...' : modelMissing ? '🎭 World Offline' : '🎭 Activate Emotion World'}
               </motion.button>
             </div>
           )}

@@ -18,8 +18,11 @@ const VIRAL_LINKS = [
   { name: '📖 Story',        href: '/story-control' },
 ];
 
+import useAuthStore from '@/store/authStore';
+
 export default function Navbar() {
   const pathname = usePathname();
+  const { user } = useAuthStore();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenu, setMobileMenu] = useState(false);
 
@@ -83,12 +86,23 @@ export default function Navbar() {
 
         {}
         <div className="flex items-center gap-3">
-          <Link href="/login" className="hidden sm:block text-white/50 hover:text-white text-sm px-4 py-2 transition-colors">
-            Login
-          </Link>
-          <GlowButton href="/register" size="sm">
-            Get Started
-          </GlowButton>
+          {user ? (
+            <Link href="/dashboard" className="flex items-center gap-3 glass px-4 py-2 rounded-xl text-sm hover:bg-white/10 transition-all border border-white/10">
+              <div className="w-6 h-6 rounded-full bg-brand-500 flex items-center justify-center text-[10px] font-bold overflow-hidden">
+                {user.avatar ? <img src={user.avatar} alt="" className="w-full h-full object-cover" /> : user.name?.[0].toUpperCase()}
+              </div>
+              <span className="hidden sm:block">Dashboard</span>
+            </Link>
+          ) : (
+            <>
+              <Link href="/login" className="hidden sm:block text-white/50 hover:text-white text-sm px-4 py-2 transition-colors">
+                Login
+              </Link>
+              <GlowButton href="/register" size="sm">
+                Get Started
+              </GlowButton>
+            </>
+          )}
           
           {}
           <button 

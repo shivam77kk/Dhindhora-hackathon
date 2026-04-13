@@ -25,7 +25,7 @@ export const createWebreel = async (req, res) => {
   }
 };
 
-export const getWeboreels = async (req, res) => {
+export const getWebreels = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 20;
@@ -33,24 +33,24 @@ export const getWeboreels = async (req, res) => {
     const filter = { isPublished: true };
     if (req.query.category) filter.category = req.query.category;
 
-    const weboreels = await Webreel.find(filter)
+    const webreels = await Webreel.find(filter)
       .populate('creator', 'name username avatar')
       .sort('-createdAt')
       .skip(skip)
       .limit(limit);
     const total = await Webreel.countDocuments(filter);
-    res.json(apiSuccess({ weboreels, total, page, pages: Math.ceil(total / limit) }));
+    res.json(apiSuccess({ webreels, total, page, pages: Math.ceil(total / limit) }));
   } catch (error) {
     res.status(500).json(apiError(error.message));
   }
 };
 
-export const getMyWeboreels = async (req, res) => {
+export const getMyWebreels = async (req, res) => {
   try {
-    const weboreels = await Webreel.find({ creator: req.user._id })
+    const webreels = await Webreel.find({ creator: req.user._id })
       .sort('-createdAt')
       .populate('predictionMarket');
-    res.json(apiSuccess(weboreels));
+    res.json(apiSuccess(webreels));
   } catch (error) {
     res.status(500).json(apiError(error.message));
   }

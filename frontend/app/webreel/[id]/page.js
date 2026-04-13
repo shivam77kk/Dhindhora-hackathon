@@ -48,7 +48,7 @@ export default function WebreelViewerPage({ params }) {
 
   const fetchWebreel = async () => {
     try {
-      const { data } = await api.get(`/weboreels/${id}`);
+      const { data } = await api.get(`/webreels/${id}`);
       setWebreel(data.data);
     } catch (e) { toast.error('Webreel not found'); }
     finally { setLoading(false); }
