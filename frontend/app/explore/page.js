@@ -8,6 +8,8 @@ import CursorEffect from '@/components/ui/CursorEffect';
 import ScrollProgress from '@/components/ui/ScrollProgress';
 import { Search, Filter } from 'lucide-react';
 import Link from 'next/link';
+import Navbar from '@/components/layout/Navbar';
+import useAuthStore from '@/store/authStore';
 
 const CATEGORIES = ['all', 'startup', 'story', 'portfolio', 'campaign', 'product', 'personal'];
 
@@ -34,12 +36,7 @@ export default function ExplorePage() {
   return (
     <div className="min-h-screen bg-[#050510]">
       <CursorEffect /><ScrollProgress />
-      <nav className="fixed top-0 w-full z-50 glass border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-3"><div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-neon-pink flex items-center justify-center font-bold">D</div><span className="font-display text-xl font-bold gradient-text">Dhindhora</span></Link>
-          <div className="flex items-center gap-3"><Link href="/login" className="text-white/70 text-sm px-4 py-2">Login</Link><GlowButton href="/register">Get Started</GlowButton></div>
-        </div>
-      </nav>
+      <Navbar />
       <div className="pt-24 pb-12 px-6 max-w-7xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-12">
           <h1 className="font-display text-5xl font-bold mb-4"><span className="gradient-text">Explore</span> the Galaxy</h1>

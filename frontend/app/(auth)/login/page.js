@@ -60,7 +60,7 @@ export default function LoginPage() {
               <input type="password" value={password} onChange={e => setPassword(e.target.value)} className="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3 text-white placeholder-white/30 focus:outline-none focus:border-brand-500/50 transition-colors" placeholder="••••••••" />
             </div>
           </div>
-          <GlowButton type="submit" onClick={handleSubmit} disabled={loading} className="w-full">
+          <GlowButton type="submit" disabled={loading} className="w-full">
             {loading ? <><Loader2 size={16} className="animate-spin" /> Logging in...</> : 'Login →'}
           </GlowButton>
           <p className="text-center text-white/40 text-sm">

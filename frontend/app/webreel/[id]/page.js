@@ -20,6 +20,8 @@ const GaussianSplatViewer = dynamic(() => import('@/components/three/GaussianSpl
 const WormholeTransition = dynamic(() => import('@/components/three/WormholeTransition'), { ssr: false });
 const ScrollCamera = dynamic(() => import('@/components/three/ScrollCamera'), { ssr: false });
 const MusicGenerator = dynamic(() => import('@/components/ai/MusicGenerator'), { ssr: false });
+const FeatureDrawer = dynamic(() => import('@/components/webreel/FeatureDrawer'), { ssr: false });
+import Navbar from '@/components/layout/Navbar';
 
 const EMOJIS = [
   { emoji: '🔥', icon: Flame, color: '#F97316' },
@@ -103,19 +105,8 @@ export default function WebreelViewerPage({ params }) {
         <motion.div key={fe.id} initial={{ opacity: 1, y: '50vh', x: `${fe.position?.x || 50}vw`, scale: 0.5 }} animate={{ opacity: 0, y: '-10vh', scale: 2 }} transition={{ duration: 3 }} className="fixed z-50 text-4xl pointer-events-none">{fe.emoji}</motion.div>
       ))}</AnimatePresence>
 
-      <nav className="fixed top-0 w-full z-40 glass border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 text-white/60 hover:text-white"><ArrowLeft size={18} /><span className="text-sm">Back</span></Link>
-          <div className="flex items-center gap-3">
-            <LiveViewerCount />
-            {webreel.musicStatus === 'ready' && webreel.musicPrompt ? (
-              <MusicGenerator musicMetadata={typeof webreel.musicPrompt === 'string' ? JSON.parse(webreel.musicPrompt) : webreel.musicPrompt} />
-            ) : (
-              <MusicVisualizer bars={5} />
-            )}
-          </div>
-        </div>
-      </nav>
+      <Navbar />
+      <FeatureDrawer webreelId={id} />
 
       <section className="relative z-10 min-h-screen flex items-center justify-center px-6 pt-20">
         <div className="max-w-4xl w-full text-center relative z-20">

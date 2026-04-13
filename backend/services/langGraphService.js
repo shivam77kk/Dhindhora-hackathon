@@ -39,7 +39,7 @@ export const runStartupEvaluationAgent = async (idea, onStep) => {
 
   let finalScore;
   try {
-    finalScore = JSON.parse(results[results.length - 1].content.replace(/```json|```/g, '').trim());
+    finalScore = await callGeminiJSON(results[results.length - 1].content);
   } catch {
     finalScore = { score: 70, verdict: 'Promising', topRisk: 'Market uncertainty', topOpportunity: 'First mover advantage', advice: 'Validate with customers ASAP' };
   }

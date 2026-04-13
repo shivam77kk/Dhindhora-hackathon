@@ -1,3 +1,6 @@
+import dns from 'node:dns';
+dns.setServers(['8.8.8.8', '8.8.4.4']);
+
 import express from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
@@ -12,15 +15,10 @@ import { configureCloudinary } from './config/cloudinary.js';
 import { setupSocketHandlers } from './services/socketService.js';
 import { errorHandler } from './middleware/errorMiddleware.js';
 
-import authRoutes from './routes/authRoutes.js';
-import userRoutes from './routes/userRoutes.js';
-import webreelRoutes from './routes/webreelRoutes.js';
-import aiRoutes from './routes/aiRoutes.js';
-import reactionRoutes from './routes/reactionRoutes.js';
-import communityRoutes from './routes/communityRoutes.js';
-import leaderboardRoutes from './routes/leaderboardRoutes.js';
-import predictionRoutes from './routes/predictionRoutes.js';
 import musicRoutes from './routes/musicRoutes.js';
+import airDrawRoutes from './routes/airDrawRoutes.js';
+import roastRoutes from './routes/roastRoutes.js';
+import voiceRoutes from './routes/voiceRoutes.js';
 
 dotenv.config();
 
@@ -47,15 +45,10 @@ app.use('/api/', limiter);
 
 app.use((req, res, next) => { req.io = io; next(); });
 
-app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/weboreels', webreelRoutes);
-app.use('/api/ai', aiRoutes);
-app.use('/api/reactions', reactionRoutes);
-app.use('/api/community', communityRoutes);
-app.use('/api/leaderboard', leaderboardRoutes);
-app.use('/api/predictions', predictionRoutes);
 app.use('/api/music', musicRoutes);
+app.use('/api/air-draw', airDrawRoutes);
+app.use('/api/roast', roastRoutes);
+app.use('/api/voice', voiceRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ success: true, message: '🚀 Dhindhora Anti-Gravity AI is LIVE!', timestamp: new Date() });
@@ -63,17 +56,22 @@ app.get('/api/health', (req, res) => {
 
 app.use(errorHandler);
 
-connectDB();
 configureCloudinary();
 setupSocketHandlers(io);
 
 const PORT = process.env.PORT || 5000;
-httpServer.listen(PORT, () => {
-  console.log(`🚀 Dhindhora Anti-Gravity AI server running on port ${PORT}`);
-  console.log(`🌐 Client: ${process.env.CLIENT_URL}`);
-  console.log(`⚡ WebGPU galaxy: 1,000,000 stars`);
-  console.log(`🎰 Prediction market: LIVE`);
-  console.log(`🎵 AI Music Generation: ENABLED`);
-});
+
+const startServer = async () => {
+  await connectDB();
+  httpServer.listen(PORT, () => {
+    console.log(`🚀 Dhindhora Anti-Gravity AI server running on port ${PORT}`);
+    console.log(`🌐 Client: ${process.env.CLIENT_URL}`);
+    console.log(`⚡ WebGPU galaxy: 1,000,000 stars`);
+    console.log(`🎰 Prediction market: LIVE`);
+    console.log(`🎵 AI Music Generation: ENABLED`);
+  });
+};
+
+startServer();
 
 export { io };

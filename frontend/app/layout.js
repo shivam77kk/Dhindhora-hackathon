@@ -8,12 +8,16 @@ export const metadata = {
   keywords: 'AI, webreel, hackathon, WebGPU, 3D, Gemini, prediction market, music generation',
 };
 
+import dynamic from 'next/dynamic';
+const VoiceController = dynamic(() => import('@/components/voice/VoiceController'), { ssr: false });
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
       <body className="bg-[#050510] text-white antialiased" suppressHydrationWarning>
         <Providers>
           {children}
+          <VoiceController />
           <Toaster
             position="top-right"
             toastOptions={{

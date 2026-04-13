@@ -64,7 +64,7 @@ export default function RegisterPage() {
               </div>
             </div>
           ))}
-          <GlowButton type="submit" onClick={handleSubmit} disabled={loading} className="w-full">
+          <GlowButton type="submit" disabled={loading} className="w-full">
             {loading ? <><Loader2 size={16} className="animate-spin" /> Creating...</> : 'Create Account 🚀'}
           </GlowButton>
           <p className="text-center text-white/40 text-sm">

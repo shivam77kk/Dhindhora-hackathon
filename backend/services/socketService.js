@@ -87,5 +87,44 @@ export const setupSocketHandlers = (io) => {
         });
       });
     });
+
+    // ── AIR CANVAS EVENTS ──────────────────────────────────────────────────
+
+    socket.on('draw:join-room', ({ roomId, username }) => {
+      const room = `draw:${roomId}`;
+      socket.join(room);
+      socket.to(room).emit('draw:collaborator-joined', { username, socketId: socket.id });
+      socket.emit('draw:room-joined', { roomId, room });
+    });
+
+    socket.on('draw:air-stroke', (data) => {
+      if (!data?.roomId) return;
+      socket.to(`draw:${data.roomId}`).emit('draw:air-stroke', data);
+    });
+
+    socket.on('draw:air-clear', ({ roomId }) => {
+      if (!roomId) return;
+      socket.to(`draw:${roomId}`).emit('draw:air-clear', { roomId });
+    });
+
+    // ── ROAST EVENTS ────────────────────────────────────────────────────────────
+
+    socket.on('roast:request-leaderboard', async () => {
+      socket.emit('roast:leaderboard-refresh', { requested: true });
+    });
+
+    // ── VOICE EVENTS ────────────────────────────────────────────────────────────
+
+    socket.on('voice:command-broadcast', ({ webreelId, command, username }) => {
+      if (!webreelId) return;
+      socket.to(webreelId).emit('voice:command-received', { command, username, socketId: socket.id });
+    });
+
+    // ── EMOTION BROADCAST ───────────────────────────────────────────────────────
+
+    socket.on('emotion:broadcast', ({ webreelId, emotion, intensity }) => {
+      if (!webreelId) return;
+      socket.to(webreelId).emit('emotion:world-change', { emotion, intensity });
+    });
   });
 };

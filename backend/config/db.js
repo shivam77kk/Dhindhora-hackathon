@@ -4,10 +4,16 @@ dotenv.config();
 
 export const connectDB = async () => {
   try {
-    const conn = await mongoose.connect(process.env.MONGO_URI);
+    const conn = await mongoose.connect(process.env.MONGO_URI, {
+      family: 4, // Force IPv4
+      serverSelectionTimeoutMS: 15000,
+    });
     console.log(`✅ MongoDB connected: ${conn.connection.host}`);
   } catch (error) {
-    console.warn(`⚠️ Primary MongoDB unavailable (${error.message}). Booting Memory Server fallback...`);
+    console.warn(`⚠️ Primary MongoDB Connection Failed:`);
+    console.error(`   - Error: ${error.message}`);
+    console.error(`   - Code: ${error.code}`);
+    console.warn(`🔄 Booting Memory Server fallback for hackathon stability...`);
     try {
       const { MongoMemoryServer } = await import('mongodb-memory-server');
       const mongoServer = await MongoMemoryServer.create();

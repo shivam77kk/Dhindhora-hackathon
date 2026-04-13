@@ -4,20 +4,23 @@ import { connectSocket, disconnectSocket } from '@/lib/socket';
 import useSocketStore from '@/store/socketStore';
 
 export default function useSocket(webreelId, username) {
-  const { setSocket, setViewers } = useSocketStore();
+  const { socket, setSocket, setViewers } = useSocketStore();
 
   useEffect(() => {
-    const socket = connectSocket();
-    setSocket(socket);
+    // Only connect if not already connected or if we have a new ID
+    const socketInstance = connectSocket();
+    setSocket(socketInstance);
 
-    socket.on('connect', () => {
-      if (webreelId) socket.emit('join:webreel', { webreelId, username });
+    socketInstance.on('connect', () => {
+      if (webreelId) socketInstance.emit('join:webreel', { webreelId, username });
     });
 
-    socket.on('viewers:update', ({ count }) => setViewers(count));
+    socketInstance.on('viewers:update', ({ count }) => setViewers(count));
 
     return () => {
-      if (webreelId) socket.emit('leave:webreel', { webreelId });
+      if (webreelId) socketInstance.emit('leave:webreel', { webreelId });
     };
-  }, [webreelId, username]);
+  }, [webreelId, username, setSocket, setViewers]);
+
+  return { socket };
 }

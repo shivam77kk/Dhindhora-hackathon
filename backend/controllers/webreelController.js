@@ -5,9 +5,19 @@ import { apiSuccess, apiError } from '../utils/apiResponse.js';
 export const createWebreel = async (req, res) => {
   try {
     const { title, tagline, category, content, colorPalette, musicMood, createdFrom } = req.body;
+    
+    const safeTitle = title && title.length > 100 ? title.substring(0, 97) + '...' : title || 'Untitled';
+    const safeTagline = tagline && tagline.length > 200 ? tagline.substring(0, 197) + '...' : tagline;
+
     const webreel = await Webreel.create({
-      creator: req.user._id, title, tagline, category, content,
-      colorPalette, musicMood, createdFrom: createdFrom || 'manual',
+      creator: req.user._id, 
+      title: safeTitle, 
+      tagline: safeTagline, 
+      category, 
+      content,
+      colorPalette, 
+      musicMood, 
+      createdFrom: createdFrom || 'manual',
     });
     res.status(201).json(apiSuccess(webreel));
   } catch (error) {

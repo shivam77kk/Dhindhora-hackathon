@@ -11,6 +11,7 @@ import ScrollProgress from '@/components/ui/ScrollProgress';
 import WebGPUBadge from '@/components/ui/WebGPUBadge';
 import MusicVisualizer from '@/components/ui/MusicVisualizer';
 import { Zap, Star, Globe, Brain, Music, Eye, Trophy, DollarSign, Upload } from 'lucide-react';
+import Navbar from '@/components/layout/Navbar';
 
 const GalaxyScene = dynamic(() => import('@/components/three/GalaxyScene'), { ssr: false });
 
@@ -46,23 +47,7 @@ export default function LandingPage() {
       <ScrollProgress />
       <div className="fixed inset-0 z-0"><GalaxyScene /></div>
 
-      <nav className="fixed top-0 w-full z-50 glass border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-neon-pink flex items-center justify-center text-lg font-bold">D</div>
-            <span className="font-display text-xl font-bold gradient-text">Dhindhora</span>
-          </motion.div>
-          <div className="hidden md:flex items-center gap-8">
-            {['Explore', 'Community', 'Leaderboard'].map(item => (
-              <Link key={item} href={`/${item.toLowerCase()}`} className="text-white/60 hover:text-white transition-colors text-sm">{item}</Link>
-            ))}
-          </div>
-          <div className="flex items-center gap-3">
-            <Link href="/login" className="text-white/70 hover:text-white text-sm px-4 py-2">Login</Link>
-            <GlowButton href="/register">Get Started</GlowButton>
-          </div>
-        </div>
-      </nav>
+      <Navbar />
 
       <motion.section style={{ opacity: heroOpacity, scale: heroScale }} className="relative z-10 min-h-screen flex flex-col items-center justify-center text-center px-6 pt-20">
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
