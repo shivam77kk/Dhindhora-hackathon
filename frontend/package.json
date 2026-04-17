@@ -8,6 +8,9 @@
     "start": "next start"
   },
   "dependencies": {
+    "@mediapipe/camera_utils": "^0.3.1675466862",
+    "@mediapipe/drawing_utils": "^0.3.1675466124",
+    "@mediapipe/hands": "^0.4.1646424915",
     "@react-three/drei": "^9.105.0",
     "@react-three/fiber": "^8.16.8",
     "axios": "^1.7.2",

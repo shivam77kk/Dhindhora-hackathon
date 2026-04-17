@@ -361,7 +361,7 @@ export default function RoastEngine() {
                   </div>
                   <div className="glass rounded-lg p-3">
                     <div className="text-xs text-neon-pink font-bold mb-1">Fighter 2 says:</div>
-                    <p className="text-white/80 text-xs leading-relaxed">{round.person1Attack}</p>
+                    <p className="text-white/80 text-xs leading-relaxed">{round.person2Attack}</p>
                   </div>
                 </div>
                 <div className="text-center text-xs text-white/50">

@@ -60,6 +60,9 @@ export default function AirDrawingCanvas({ roomId = 'global' }) {
   const allStrokesRef  = useRef([]);   
   const isDrawingRef   = useRef(false);
   const lastEmitRef    = useRef(0);
+  const colorRef       = useRef('#a855f7');
+  const strokeSizeRef  = useRef(8);
+  const onHandResultsRef = useRef(null);
 
   
   const [active, setActive]             = useState(false);
@@ -70,6 +73,10 @@ export default function AirDrawingCanvas({ roomId = 'global' }) {
   const [collaborators, setCollaborators] = useState(0);
   const [gesture, setGesture]           = useState('none'); 
   const [startError, setStartError]     = useState('');
+
+  // Keep refs in sync with state so callbacks always see latest values
+  useEffect(() => { colorRef.current = color; }, [color]);
+  useEffect(() => { strokeSizeRef.current = strokeSize; }, [strokeSize]);
 
   const { ready: mediaPipeReady, error: mediaPipeError } = useMediaPipe();
   const { socket } = useSocket();
@@ -116,7 +123,7 @@ export default function AirDrawingCanvas({ roomId = 'global' }) {
   const isPinching = useCallback((lm) => {
     const dx = lm[INDEX_TIP].x - lm[THUMB_TIP].x;
     const dy = lm[INDEX_TIP].y - lm[THUMB_TIP].y;
-    return Math.sqrt(dx * dx + dy * dy) < 0.06;
+    return Math.sqrt(dx * dx + dy * dy) < 0.045;
   }, []);
 
   const isFist = useCallback((lm) => {
@@ -128,6 +135,10 @@ export default function AirDrawingCanvas({ roomId = 'global' }) {
     const overlay = overlayRef.current;
     const drawCanvas = drawCanvasRef.current;
     if (!overlay || !drawCanvas) return;
+
+    // Read latest color/size from refs (not stale closure)
+    const currentColor = colorRef.current;
+    const currentSize = strokeSizeRef.current;
 
     const octx = overlay.getContext('2d');
     octx.clearRect(0, 0, overlay.width, overlay.height);
@@ -161,10 +172,10 @@ export default function AirDrawingCanvas({ roomId = 'global' }) {
       octx.lineWidth = 3;
       octx.stroke();
 
+      // Pinch only finalizes the stroke (stops drawing), does NOT auto-recognize
       if (isDrawingRef.current && strokeRef.current.length > 3) {
         finalizeStroke(drawCanvas);
         isDrawingRef.current = false;
-        recognizeDrawing(drawCanvas);
       }
       return;
     }
@@ -184,7 +195,7 @@ export default function AirDrawingCanvas({ roomId = 'global' }) {
       
       octx.beginPath();
       octx.arc(tipX, tipY, 14, 0, Math.PI * 2);
-      octx.strokeStyle = color;
+      octx.strokeStyle = currentColor;
       octx.lineWidth = 3;
       octx.globalAlpha = 0.8;
       octx.stroke();
@@ -200,7 +211,7 @@ export default function AirDrawingCanvas({ roomId = 'global' }) {
         
         dctx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
         allStrokesRef.current.forEach(s => drawStrokeOnCanvas(dctx, s.points, s.color, s.size));
-        drawStrokeOnCanvas(dctx, strokeRef.current, color, strokeSize);
+        drawStrokeOnCanvas(dctx, strokeRef.current, currentColor, currentSize);
       }
 
       
@@ -209,8 +220,8 @@ export default function AirDrawingCanvas({ roomId = 'global' }) {
         socket.emit('draw:air-stroke', {
           roomId,
           points: strokeRef.current.slice(-20),
-          color,
-          strokeWidth: strokeSize,
+          color: currentColor,
+          strokeWidth: currentSize,
         });
         lastEmitRef.current = now;
       }
@@ -221,7 +232,10 @@ export default function AirDrawingCanvas({ roomId = 'global' }) {
         isDrawingRef.current = false;
       }
     }
-  }, [color, strokeSize, roomId, socket, isIndexUp, isPinching, isFist]);
+  }, [roomId, socket, isIndexUp, isPinching, isFist]);
+
+  // Always keep the ref pointing to the latest callback
+  useEffect(() => { onHandResultsRef.current = onHandResults; }, [onHandResults]);
 
   const finalizeStroke = (canvas) => {
     if (strokeRef.current.length < 2) {
@@ -230,8 +244,8 @@ export default function AirDrawingCanvas({ roomId = 'global' }) {
     }
     allStrokesRef.current.push({
       points: [...strokeRef.current],
-      color,
-      size: strokeSize,
+      color: colorRef.current,
+      size: strokeSizeRef.current,
     });
     strokeRef.current = [];
     
@@ -320,22 +334,32 @@ export default function AirDrawingCanvas({ roomId = 'global' }) {
 
       
       const hands = new window.Hands({
-        locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1675469240/${file}`,
+        locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/hands@0.4.1646424915/${file}`,
       });
       hands.setOptions({
         maxNumHands: 1,
         modelComplexity: 1,
-        minDetectionConfidence: 0.75,
-        minTrackingConfidence: 0.75,
+        minDetectionConfidence: 0.7,
+        minTrackingConfidence: 0.7,
       });
-      hands.onResults(onHandResults);
+      hands.onResults((results) => {
+        if (onHandResultsRef.current) onHandResultsRef.current(results);
+      });
       handsRef.current = hands;
 
       
       const camera = new window.Camera(videoRef.current, {
         onFrame: async () => {
-          if (handsRef.current && videoRef.current) {
-            await handsRef.current.send({ image: videoRef.current });
+          try {
+            if (handsRef.current && videoRef.current) {
+              await handsRef.current.send({ image: videoRef.current });
+            }
+          } catch (err) {
+            // Silently ignore WASM errors (e.g. "SolutionWasm instance already deleted")
+            // These are non-fatal and happen during teardown/page navigation
+            if (!err.message?.includes('Aborted') && !err.message?.includes('SolutionWasm')) {
+              console.warn('MediaPipe frame error:', err.message);
+            }
           }
         },
         width: 640,
@@ -357,8 +381,14 @@ export default function AirDrawingCanvas({ roomId = 'global' }) {
 
   
   const stopCanvas = () => {
-    cameraRef.current?.stop();
-    handsRef.current?.close();
+    // Stop the camera feed first
+    try { cameraRef.current?.stop(); } catch (_) {}
+    cameraRef.current = null;
+
+    // Close hands — WASM instance may already be deleted, so catch the BindingError
+    try { handsRef.current?.close(); } catch (_) {}
+    handsRef.current = null;
+
     const stream = videoRef.current?.srcObject;
     stream?.getTracks().forEach(t => t.stop());
     if (videoRef.current) videoRef.current.srcObject = null;
@@ -472,7 +502,7 @@ export default function AirDrawingCanvas({ roomId = 'global' }) {
                 <p className="text-white font-bold text-lg">Air Drawing Canvas</p>
                 <p className="text-white/50 text-sm mt-1">
                   Use your index finger to draw in the air.<br />
-                  Pinch thumb+index to let AI recognize your shape!
+                  Click the AI Recognize button when you're done drawing!
                 </p>
                 {startError && <p className="text-red-400 text-xs mt-2">{startError}</p>}
               </div>
@@ -553,7 +583,7 @@ export default function AirDrawingCanvas({ roomId = 'global' }) {
       <div className="grid grid-cols-3 gap-2">
         {[
           { emoji: '☝️', name: 'Index Up', action: 'Draw freely' },
-          { emoji: '🤏', name: 'Pinch', action: 'AI Recognizes shape' },
+          { emoji: '🤏', name: 'Pinch', action: 'Stop current stroke' },
           { emoji: '✊', name: 'Fist', action: 'Pause drawing' },
         ].map(g => (
           <div key={g.name} className="glass rounded-xl p-3 text-center border border-white/5">

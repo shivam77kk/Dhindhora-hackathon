@@ -18,22 +18,36 @@ export const generateRoast = async (req, res) => {
       savage: 'hilariously brutal (but never offensive, racist, or genuinely hurtful)',
     }[level];
 
-    const prompt = `You are a world-class comedian AI creating a roast for a web app.
+    const userTraits = (traits || '').trim();
+    const traitInstructions = userTraits
+      ? `CRITICAL: The user described themselves as: "${userTraits}". You MUST directly reference and roast specific things from their description. DO NOT give a generic roast. Pick apart what they said about themselves and make fun of THOSE specific details.`
+      : `The user gave no description. Roast them for being too boring/scared to even describe themselves.`;
+
+    const prompt = `You are a world-class stand-up comedian AI creating a PERSONALIZED roast for a web app.
 Person's name: "${name.trim()}"
-Their description: "${(traits || 'a regular internet person').trim()}"
+
+${traitInstructions}
+
 Roast intensity: ${levelDesc}
 
-Rules: Keep it funny, creative, and shareable. Never be genuinely offensive. Max 2 sentences per field.
+IMPORTANT RULES:
+- The roast MUST be UNIQUE and PERSONALIZED to what they said about themselves
+- Reference their SPECIFIC traits, habits, interests, or quirks they mentioned
+- If they said they like coding, roast their coding. If they said they're a chai addict, roast that.
+- NEVER give a generic "you're so unique" type roast — always target their self-description
+- Keep it funny, creative, and shareable. Never genuinely offensive.
+- Max 2 sentences per field.
+
 Respond ONLY with valid JSON — no markdown, no backticks, no extra text:
 {
-  "roast": "<2-sentence funny roast>",
-  "praise": "<2-sentence genuine heartfelt compliment>",
+  "roast": "<2-sentence funny roast DIRECTLY referencing their description>",
+  "praise": "<2-sentence genuine heartfelt compliment based on what they shared>",
   "verdict": "<1 ALL-CAPS word that defines them e.g. LEGENDARY>",
   "roastScore": <integer 1-100 how roastable they are>,
-  "funnyNickname": "<creative funny nickname max 4 words>",
-  "superpower": "<their ridiculous superpower max 6 words>",
-  "weakness": "<their silly weakness max 6 words>",
-  "emoji": "<single emoji that represents them>",
+  "funnyNickname": "<creative funny nickname inspired by their traits max 4 words>",
+  "superpower": "<their ridiculous superpower based on their traits max 6 words>",
+  "weakness": "<their silly weakness based on their traits max 6 words>",
+  "emoji": "<single emoji that represents them based on their description>",
   "shareText": "<punchy social media one-liner max 12 words>"
 }`;
 

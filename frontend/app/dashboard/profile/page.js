@@ -8,7 +8,7 @@ import toast from 'react-hot-toast';
 import { User, Mail, Link as LinkIcon, Camera, Trophy, Medal } from 'lucide-react';
 
 export default function ProfilePage() {
-  const { user, login } = useAuthStore();
+  const { user, setUser } = useAuthStore();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -31,7 +31,7 @@ export default function ProfilePage() {
     setLoading(true);
     try {
       const res = await api.put('/users/profile', formData);
-      login(res.data.data, localStorage.getItem('token')); 
+      setUser(res.data.data);
       toast.success('Profile updated successfully! ✨');
     } catch (err) {
       toast.error('Failed to update profile');
