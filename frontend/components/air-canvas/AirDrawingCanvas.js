@@ -74,7 +74,7 @@ export default function AirDrawingCanvas({ roomId = 'global' }) {
   const [gesture, setGesture]           = useState('none'); 
   const [startError, setStartError]     = useState('');
 
-  // Keep refs in sync with state so callbacks always see latest values
+  
   useEffect(() => { colorRef.current = color; }, [color]);
   useEffect(() => { strokeSizeRef.current = strokeSize; }, [strokeSize]);
 
@@ -136,7 +136,7 @@ export default function AirDrawingCanvas({ roomId = 'global' }) {
     const drawCanvas = drawCanvasRef.current;
     if (!overlay || !drawCanvas) return;
 
-    // Read latest color/size from refs (not stale closure)
+    
     const currentColor = colorRef.current;
     const currentSize = strokeSizeRef.current;
 
@@ -172,7 +172,7 @@ export default function AirDrawingCanvas({ roomId = 'global' }) {
       octx.lineWidth = 3;
       octx.stroke();
 
-      // Pinch only finalizes the stroke (stops drawing), does NOT auto-recognize
+      
       if (isDrawingRef.current && strokeRef.current.length > 3) {
         finalizeStroke(drawCanvas);
         isDrawingRef.current = false;
@@ -234,7 +234,7 @@ export default function AirDrawingCanvas({ roomId = 'global' }) {
     }
   }, [roomId, socket, isIndexUp, isPinching, isFist]);
 
-  // Always keep the ref pointing to the latest callback
+  
   useEffect(() => { onHandResultsRef.current = onHandResults; }, [onHandResults]);
 
   const finalizeStroke = (canvas) => {
@@ -355,8 +355,8 @@ export default function AirDrawingCanvas({ roomId = 'global' }) {
               await handsRef.current.send({ image: videoRef.current });
             }
           } catch (err) {
-            // Silently ignore WASM errors (e.g. "SolutionWasm instance already deleted")
-            // These are non-fatal and happen during teardown/page navigation
+            
+            
             if (!err.message?.includes('Aborted') && !err.message?.includes('SolutionWasm')) {
               console.warn('MediaPipe frame error:', err.message);
             }
@@ -381,11 +381,11 @@ export default function AirDrawingCanvas({ roomId = 'global' }) {
 
   
   const stopCanvas = () => {
-    // Stop the camera feed first
+    
     try { cameraRef.current?.stop(); } catch (_) {}
     cameraRef.current = null;
 
-    // Close hands — WASM instance may already be deleted, so catch the BindingError
+    
     try { handsRef.current?.close(); } catch (_) {}
     handsRef.current = null;
 

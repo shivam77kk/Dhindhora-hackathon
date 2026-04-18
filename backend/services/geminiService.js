@@ -66,7 +66,7 @@ const getSafetyMockResponse = (prompt, isJSON) => {
   }
 
   
-  // Battle-specific mock — MUST come before solo roast check since battle prompts also contain 'roast'
+  
   if (prompt.includes('Fighter 1') || prompt.includes('roast battle show')) {
     const name1Match = prompt.match(/Fighter 1:\s*"([^"]+)"/i);
     const name2Match = prompt.match(/Fighter 2:\s*"([^"]+)"/i);
@@ -89,17 +89,17 @@ const getSafetyMockResponse = (prompt, isJSON) => {
     };
   }
 
-  // Solo roast mock — extract name/traits from prompt and generate a personalized fallback
+  
   if (prompt.includes('roast') || prompt.includes('comedian')) {
     const nameMatch = prompt.match(/Person's name:\s*"([^"]+)"/i);
-    // Match traits from multiple possible prompt formats
+    
     const traitsMatch = prompt.match(/described themselves as:\s*"([^"]+)"/i)
       || prompt.match(/Their description:\s*"([^"]+)"/i)
       || prompt.match(/user described themselves as:\s*"([^"]+)"/i);
     const name = nameMatch ? nameMatch[1] : 'Friend';
     const traits = traitsMatch ? traitsMatch[1] : '';
 
-    // Pick varied roasts based on name/traits hash
+    
     const hash = (name + traits).split('').reduce((a, c) => a + c.charCodeAt(0), 0);
     const roasts = [
       `${name} says they're "${traits || 'interesting'}". That's a creative way to say "average". Even autocorrect gives up trying to spell your personality.`,
@@ -137,7 +137,7 @@ const getSafetyMockResponse = (prompt, isJSON) => {
     };
   }
 
-  // Shape recognition mock for Air Canvas
+  
   if (prompt.includes('shape-recognition') || prompt.includes('stroke points')) {
     const shapes = ['circle', 'heart', 'star', 'triangle', 'square', 'spiral', 'wave'];
     const triggers = ['sparkle', 'love', 'explode', 'spin', 'portal', 'wave', 'sparkle'];

@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 
-// Use installed npm packages instead of CDN scripts to avoid WASM loading failures
+
 let handsModule = null;
 let cameraModule = null;
 let modulesLoaded = false;
@@ -24,7 +24,7 @@ async function loadModules() {
     handsModule = hands;
     cameraModule = camera;
 
-    // Expose to window for the AirDrawingCanvas component
+    
     window.Hands = hands.Hands;
     window.Camera = camera.Camera;
 
