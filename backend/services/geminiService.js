@@ -5,12 +5,12 @@ dotenv.config();
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 const MODELS = [
-  process.env.GEMINI_MODEL_PRIMARY || 'gemini-1.5-flash',
-  process.env.GEMINI_MODEL_FALLBACK || 'gemini-1.0-pro',
-  process.env.GEMINI_MODEL_FALLBACK_2 || 'gemini-pro',
+  process.env.GEMINI_MODEL_PRIMARY || 'gemini-2.5-flash',
+  process.env.GEMINI_MODEL_FALLBACK || 'gemini-2.5-pro',
+  process.env.GEMINI_MODEL_FALLBACK_2 || 'gemini-flash-latest',
 ];
 
-const VISION_MODELS = ['gemini-1.5-flash', 'gemini-1.5-pro'];
+const VISION_MODELS = ['gemini-2.5-flash', 'gemini-2.5-pro'];
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 

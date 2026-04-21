@@ -16,6 +16,10 @@ const VIRAL_LINKS = [
   { name: '🔥 Roast Me',     href: '/roast-me' },
   { name: '🧬 Avatar',       href: '/avatar-mirror' },
   { name: '📖 Story',        href: '/story-control' },
+  { name: '🌐 Globe',        href: '/globe' },
+  { name: '📸 Photobooth',   href: '/photobooth' },
+  { name: '🔮 Oracle',       href: '/oracle' },
+  { name: '🎮 Game',         href: '/gesture-game' },
 ];
 
 import useAuthStore from '@/store/authStore';

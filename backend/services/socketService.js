@@ -88,6 +88,30 @@ export const setupSocketHandlers = (io) => {
       });
     });
 
+    // ── GLOBE EVENTS ──────────────────────────────────────────────────────
+    socket.on('globe:join', ({ webreelId }) => {
+      if (webreelId) socket.join(`globe:${webreelId}`);
+    });
+
+    socket.on('globe:leave', ({ webreelId }) => {
+      if (webreelId) socket.leave(`globe:${webreelId}`);
+    });
+
+    // ── GAME EVENTS ───────────────────────────────────────────────────────
+    socket.on('game:join-leaderboard', () => {
+      socket.join('game:leaderboard');
+      socket.emit('game:joined', { socketId: socket.id });
+    });
+
+    socket.on('game:leave-leaderboard', () => {
+      socket.leave('game:leaderboard');
+    });
+
+    // ── FORTUNE EVENTS ────────────────────────────────────────────────────
+    socket.on('fortune:join-oracle', () => {
+      socket.join('fortune:oracle');
+    });
+
     
 
     socket.on('draw:join-room', ({ roomId, username }) => {

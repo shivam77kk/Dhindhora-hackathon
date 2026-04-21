@@ -81,7 +81,7 @@ export default function ProfilePage() {
               <Medal size={18} className="text-neon-pink" /> Achievements
             </h3>
             <div className="space-y-3">
-              {(user.badges || ['Early Adopter', 'First Webreel']).map((badge, i) => (
+              {(user.badges?.length > 0 ? user.badges : ['Early Adopter', 'First Webreel']).map((badge, i) => (
                 <div key={i} className="flex items-center gap-3 glass p-3 rounded-xl border border-white/5 hover:border-brand-500/30 transition-colors">
                   <div className="w-8 h-8 rounded-full bg-brand-500/20 flex items-center justify-center text-lg">🏆</div>
                   <span className="text-sm font-medium">{badge}</span>

@@ -26,7 +26,7 @@ export default function ExplorePage() {
     try {
       const params = category !== 'all' ? `?category=${category}` : '';
       const { data } = await api.get(`/webreels${params}`);
-      setReels(data.data?.weboreels || []);
+      setReels(data.data?.webreels || []);
     } catch (e) { setReels([]); }
     finally { setLoading(false); }
   };

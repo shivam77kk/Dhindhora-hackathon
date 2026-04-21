@@ -27,6 +27,10 @@ import leaderboardRoutes from './routes/leaderboardRoutes.js';
 import predictionRoutes from './routes/predictionRoutes.js';
 import reactionRoutes from './routes/reactionRoutes.js';
 import webreelRoutes from './routes/webreelRoutes.js';
+import globeRoutes from './routes/globeRoutes.js';
+import photoboothRoutes from './routes/photoboothRoutes.js';
+import fortuneRoutes from './routes/fortuneRoutes.js';
+import gameRoutes from './routes/gameRoutes.js';
 
 dotenv.config();
 
@@ -65,6 +69,10 @@ app.use('/api/leaderboard', leaderboardRoutes);
 app.use('/api/predictions', predictionRoutes);
 app.use('/api/reactions', reactionRoutes);
 app.use('/api/webreels', webreelRoutes);
+app.use('/api/globe', globeRoutes);
+app.use('/api/photobooth', photoboothRoutes);
+app.use('/api/fortune', fortuneRoutes);
+app.use('/api/game', gameRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ success: true, message: '🚀 Dhindhora Anti-Gravity AI is LIVE!', timestamp: new Date() });

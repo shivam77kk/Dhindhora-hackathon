@@ -8,7 +8,7 @@ import GlowButton from '@/components/ui/GlowButton';
 import CounterUp from '@/components/ui/CounterUp';
 import TypewriterText from '@/components/ui/TypewriterText';
 import WebreelCard from '@/components/webreel/WebreelCard';
-import { PlusCircle, TrendingUp, Eye, Star, DollarSign, Upload, Zap } from 'lucide-react';
+import { PlusCircle, TrendingUp, Eye, Star, DollarSign, Upload, Zap, Globe, Camera, Sparkles, Gamepad2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export default function DashboardPage() {
@@ -44,6 +44,13 @@ export default function DashboardPage() {
     { href: '/dashboard/create?mode=multimodal', icon: Upload, label: 'Upload & Create', sub: 'Photo · Voice · Video', color: 'from-neon-pink to-neon-orange' },
     { href: '/explore', icon: Zap, label: 'Explore', sub: 'Discover weboreels', color: 'from-neon-cyan to-neon-green' },
     { href: '/leaderboard', icon: Star, label: 'Leaderboard', sub: 'Check your rank', color: 'from-neon-orange to-neon-pink' },
+  ];
+
+  const viralFeatures = [
+    { href: '/globe', icon: Globe, label: 'Live Globe', sub: 'Visitor heatmap', color: 'from-blue-500 to-indigo-600' },
+    { href: '/photobooth', icon: Camera, label: 'AI Photobooth', sub: 'Style transfer', color: 'from-pink-500 to-rose-500' },
+    { href: '/oracle', icon: Sparkles, label: 'Fortune Oracle', sub: 'Cosmic reading', color: 'from-purple-500 to-fuchsia-600' },
+    { href: '/gesture-game', icon: Gamepad2, label: 'Gesture Game', sub: 'Play with hands', color: 'from-green-400 to-emerald-600' },
   ];
 
   if (loading) return <div className="flex items-center justify-center h-64"><div className="portal-ring w-16 h-16 animate-spin" /></div>;
@@ -88,6 +95,23 @@ export default function DashboardPage() {
                 </div>
                 <div className="font-semibold text-white text-sm">{action.label}</div>
                 <div className="text-white/40 text-xs mt-0.5">{action.sub}</div>
+              </motion.div>
+            </Link>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-8">
+        <h2 className="font-display text-xl font-bold text-white mb-4">Viral Features</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {viralFeatures.map((feature, i) => (
+            <Link key={i} href={feature.href}>
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.1 }} whileHover={{ y: -4 }} className="glass rounded-2xl p-5 glow-border cursor-pointer group transition-all">
+                <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform`}>
+                  <feature.icon size={20} className="text-white" />
+                </div>
+                <div className="font-semibold text-white text-sm">{feature.label}</div>
+                <div className="text-white/40 text-xs mt-0.5">{feature.sub}</div>
               </motion.div>
             </Link>
           ))}
