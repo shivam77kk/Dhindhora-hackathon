@@ -7,8 +7,11 @@ export const recognizeShape = async (req, res) => {
     const { points, canvasWidth, canvasHeight } = req.body;
 
     if (!Array.isArray(points) || points.length < 4) {
+      console.log('❌ Too few points:', points?.length);
       return res.status(400).json(apiError('Need at least 4 points to recognize a shape'));
     }
+
+    console.log(`🧠 AI Recognition started. Points: ${points.length}, W: ${canvasWidth}, H: ${canvasHeight}`);
 
     
     const step = Math.max(1, Math.floor(points.length / 60));

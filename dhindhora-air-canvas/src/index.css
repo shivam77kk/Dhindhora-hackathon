@@ -1,0 +1,206 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bau-red: #E63946;
+  --bau-blue: #457B9D;
+  --bau-navy: #1D3557;
+  --bau-yellow: #F4A261;
+  --bau-cream: #F1FAEE;
+  --bau-black: #0a0a0a;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bau-black);
+  color: var(--bau-cream);
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bau-black); }
+::-webkit-scrollbar-thumb { background: var(--bau-blue); }
+
+/* ─── Typography ─── */
+.font-display { font-family: 'Space Grotesk', sans-serif; }
+.font-mono { font-family: 'JetBrains Mono', monospace; }
+
+/* ─── Grid System ─── */
+.bauhaus-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 20px;
+}
+
+/* ─── Borders & Lines ─── */
+.bauhaus-border {
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+.bauhaus-border:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.bauhaus-line {
+  height: 2px;
+  background: rgba(255, 255, 255, 0.1);
+  width: 100%;
+}
+
+/* ─── Cards ─── */
+.bauhaus-panel {
+  background: rgba(20, 20, 20, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.bauhaus-panel::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.02) 100%);
+  pointer-events: none;
+}
+
+/* ─── Shapes ─── */
+.shape-circle {
+  border-radius: 50%;
+  aspect-ratio: 1;
+}
+.shape-square {
+  aspect-ratio: 1;
+}
+
+/* ─── Components ─── */
+.bauhaus-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.8rem;
+  transition: all 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.bauhaus-button::before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  transition: transform 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  transform-origin: bottom;
+}
+
+.btn-primary {
+  background: transparent;
+  color: var(--bau-red);
+  border: 2px solid var(--bau-red);
+}
+.btn-primary::before {
+  background: var(--bau-red);
+  transform: scaleY(0);
+}
+.btn-primary:hover {
+  color: var(--bau-black);
+}
+.btn-primary:hover::before {
+  transform: scaleY(1);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--bau-cream);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+.btn-secondary:hover {
+  border-color: var(--bau-cream);
+  background: rgba(255,255,255,0.05);
+}
+
+/* ─── Canvas Viewport ─── */
+.canvas-container {
+  position: relative;
+  width: 100%;
+  background: var(--bau-black);
+  border: 2px solid rgba(255,255,255,0.1);
+  overflow: hidden;
+}
+.canvas-container.active {
+  border-color: var(--bau-red);
+  box-shadow: 0 0 30px rgba(230, 57, 70, 0.15);
+}
+
+/* ─── Controls ─── */
+.color-swatch {
+  width: 32px;
+  height: 32px;
+  border-radius: 0;
+  cursor: pointer;
+  transition: transform 0.2s;
+  border: 2px solid transparent;
+}
+.color-swatch:hover {
+  transform: scale(1.1);
+}
+.color-swatch.active {
+  border-color: white;
+  transform: scale(1.1);
+}
+
+.size-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  background: rgba(255,255,255,0.2);
+  outline: none;
+}
+.size-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  background: var(--bau-blue);
+  cursor: pointer;
+  border-radius: 0;
+}
+
+/* ─── Utilities ─── */
+.accent-red { color: var(--bau-red); }
+.accent-blue { color: var(--bau-blue); }
+.accent-yellow { color: var(--bau-yellow); }
+
+.bg-accent-red { background-color: var(--bau-red); }
+.bg-accent-blue { background-color: var(--bau-blue); }
+.bg-accent-yellow { background-color: var(--bau-yellow); }
+
+/* Animations */
+@keyframes slideInRight {
+  from { transform: translateX(-20px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.slide-in {
+  animation: slideInRight 0.5s forwards;
+}

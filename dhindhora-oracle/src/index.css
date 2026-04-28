@@ -1,0 +1,389 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,800;0,900;1,400;1,700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,700&family=Special+Elite&family=Cinzel:wght@400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --v-bg: #12100e;
+  --v-bg-2: #1c1814;
+  --v-card: #1e1a16;
+  --v-gold: #c4a35a;
+  --v-gold-light: #d4b978;
+  --v-amber: #b07a4b;
+  --v-copper: #a0694a;
+  --v-parchment: #f5e6c8;
+  --v-cream: #ede0cc;
+  --v-text: #e0d4be;
+  --v-text-dim: #9c8e78;
+  --v-border: rgba(196,163,90,0.18);
+  --v-burgundy: #7a3b3b;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: var(--v-bg);
+  color: var(--v-text);
+  font-family: 'Lora', Georgia, serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── Scrollbar ───────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background: var(--v-bg); }
+::-webkit-scrollbar-thumb { background: linear-gradient(var(--v-gold), var(--v-amber)); border-radius: 3px; }
+
+/* ── Glass (warm) ────────────────────────────────────────────────────── */
+.glass {
+  background: rgba(30, 26, 22, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--v-border);
+}
+
+/* ── Gradient text ───────────────────────────────────────────────────── */
+.gradient-text {
+  background: linear-gradient(135deg, #d4b978 0%, #c4a35a 30%, #b07a4b 60%, #d4b978 100%);
+  background-size: 300% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: textShimmer 4s ease-in-out infinite;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   TAROT CARD — Animated spinning conic-gradient border
+   ═══════════════════════════════════════════════════════════════════════ */
+@property --tarot-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+
+.tarot-card {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  background: linear-gradient(165deg, #1e1a16 0%, #15120f 60%, #1a1612 100%);
+}
+
+.tarot-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  padding: 1.5px;
+  background: conic-gradient(
+    from var(--tarot-angle),
+    #c4a35a,
+    #b07a4b,
+    #7a3b3b,
+    #4a7a72,
+    #c4a35a,
+    #d4b978,
+    #c4a35a
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: tarotBorderSpin 6s linear infinite;
+  z-index: 1;
+}
+
+/* Inner ambient glow */
+.tarot-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 30% 0%, rgba(196,163,90,0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 70% 100%, rgba(176,122,75,0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(122,59,59,0.03) 0%, transparent 60%);
+  z-index: 0;
+}
+
+@keyframes tarotBorderSpin {
+  to { --tarot-angle: 360deg; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   TAROT MINI CARD — Option cards with ornamental corners
+   ═══════════════════════════════════════════════════════════════════════ */
+.tarot-mini {
+  position: relative;
+  border-radius: 16px;
+  background: linear-gradient(160deg, #221e19 0%, #181510 80%);
+  border: 1px solid rgba(196,163,90,0.15);
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.tarot-mini::before,
+.tarot-mini::after {
+  content: '';
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border: 1.5px solid rgba(196,163,90,0.25);
+  transition: all 0.4s ease;
+  z-index: 2;
+}
+.tarot-mini::before {
+  top: 6px; left: 6px;
+  border-right: none; border-bottom: none;
+  border-radius: 3px 0 0 0;
+}
+.tarot-mini::after {
+  bottom: 6px; right: 6px;
+  border-left: none; border-top: none;
+  border-radius: 0 0 3px 0;
+}
+
+.tarot-mini:hover {
+  transform: translateY(-4px) scale(1.03);
+  border-color: rgba(196,163,90,0.4);
+  box-shadow:
+    0 8px 30px rgba(196,163,90,0.15),
+    0 0 60px rgba(196,163,90,0.05),
+    inset 0 1px 0 rgba(196,163,90,0.1);
+}
+.tarot-mini:hover::before,
+.tarot-mini:hover::after {
+  border-color: rgba(196,163,90,0.6);
+  width: 28px;
+  height: 28px;
+}
+
+.tarot-mini.selected {
+  border-color: rgba(196,163,90,0.5);
+  background: linear-gradient(160deg, #2a2418 0%, #1e1a14 80%);
+  box-shadow:
+    0 0 25px rgba(196,163,90,0.2),
+    0 0 60px rgba(196,163,90,0.08),
+    inset 0 0 40px rgba(196,163,90,0.04);
+}
+.tarot-mini.selected::before,
+.tarot-mini.selected::after {
+  border-color: var(--v-gold);
+  width: 26px;
+  height: 26px;
+}
+
+/* Extra corners (top-right, bottom-left) via inner spans */
+.tarot-corner-tr,
+.tarot-corner-bl {
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  border: 1.5px solid rgba(196,163,90,0.25);
+  transition: all 0.4s ease;
+  z-index: 2;
+  pointer-events: none;
+}
+.tarot-corner-tr {
+  top: 6px; right: 6px;
+  border-left: none; border-bottom: none;
+  border-radius: 0 3px 0 0;
+}
+.tarot-corner-bl {
+  bottom: 6px; left: 6px;
+  border-right: none; border-top: none;
+  border-radius: 0 0 0 3px;
+}
+.tarot-mini:hover .tarot-corner-tr,
+.tarot-mini:hover .tarot-corner-bl {
+  border-color: rgba(196,163,90,0.6);
+  width: 28px; height: 28px;
+}
+.tarot-mini.selected .tarot-corner-tr,
+.tarot-mini.selected .tarot-corner-bl {
+  border-color: var(--v-gold);
+  width: 26px; height: 26px;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   HOLOGRAPHIC SHIMMER — Iridescent hover effect
+   ═══════════════════════════════════════════════════════════════════════ */
+.holo-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.holo-shimmer::before {
+  content: '';
+  position: absolute;
+  inset: -100%;
+  background: linear-gradient(
+    115deg,
+    transparent 20%,
+    rgba(196,163,90,0.08) 40%,
+    rgba(212,185,120,0.12) 50%,
+    rgba(196,163,90,0.08) 60%,
+    transparent 80%
+  );
+  transform: translateX(-100%) rotate(25deg);
+  transition: none;
+  z-index: 3;
+  pointer-events: none;
+}
+.holo-shimmer:hover::before {
+  animation: holoSweep 0.8s ease forwards;
+}
+
+@keyframes holoSweep {
+  to { transform: translateX(100%) rotate(25deg); }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   VINTAGE CARD — Simple card without spinning border
+   ═══════════════════════════════════════════════════════════════════════ */
+.vintage-card {
+  background: linear-gradient(165deg, #1e1a16 0%, #15120f 60%, #1a1612 100%);
+  border: 1px solid var(--v-border);
+  border-radius: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   ORNAMENTAL DIVIDER
+   ═══════════════════════════════════════════════════════════════════════ */
+.ornament {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.ornament::before,
+.ornament::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--v-gold), transparent);
+  opacity: 0.25;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   FILM GRAIN + VIGNETTE
+   ═══════════════════════════════════════════════════════════════════════ */
+.film-grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  mix-blend-mode: overlay;
+}
+.vignette {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+  background: radial-gradient(ellipse at 50% 50%, transparent 40%, rgba(18,16,14,0.7) 100%);
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   MYSTIC PULSE — Animated ring for loading/intro
+   ═══════════════════════════════════════════════════════════════════════ */
+.mystic-pulse {
+  position: relative;
+}
+.mystic-pulse::before,
+.mystic-pulse::after {
+  content: '';
+  position: absolute;
+  inset: -12px;
+  border-radius: 50%;
+  border: 1px solid rgba(196,163,90,0.2);
+  animation: mysticExpand 3s ease-in-out infinite;
+}
+.mystic-pulse::after {
+  inset: -24px;
+  animation-delay: 1s;
+  border-color: rgba(176,122,75,0.12);
+}
+
+@keyframes mysticExpand {
+  0%   { transform: scale(0.95); opacity: 0.6; }
+  50%  { transform: scale(1.08); opacity: 0.2; }
+  100% { transform: scale(0.95); opacity: 0.6; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   GOLDEN GLOW BUTTON
+   ═══════════════════════════════════════════════════════════════════════ */
+.btn-oracle {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #c4a35a, #b07a4b, #c4a35a);
+  background-size: 200% auto;
+  animation: btnShimmer 3s ease-in-out infinite;
+  box-shadow:
+    0 4px 20px rgba(196,163,90,0.3),
+    0 0 40px rgba(196,163,90,0.1),
+    inset 0 1px 0 rgba(255,255,255,0.15);
+}
+.btn-oracle::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: conic-gradient(from 0deg, #c4a35a, #d4b978, #b07a4b, #c4a35a);
+  z-index: -1;
+  animation: tarotBorderSpin 4s linear infinite;
+  filter: blur(6px);
+  opacity: 0.5;
+}
+.btn-oracle:hover {
+  box-shadow:
+    0 6px 30px rgba(196,163,90,0.5),
+    0 0 80px rgba(196,163,90,0.2),
+    inset 0 1px 0 rgba(255,255,255,0.2);
+}
+
+@keyframes btnShimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   KEYFRAMES
+   ═══════════════════════════════════════════════════════════════════════ */
+@keyframes textShimmer {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes gentleSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════════════════════════════════ */
+@media (max-width: 640px) {
+  .tarot-card { border-radius: 16px; }
+  .tarot-card::before { border-radius: 16px; }
+  .tarot-mini { border-radius: 12px; }
+  .tarot-mini::before { width: 16px; height: 16px; top: 4px; left: 4px; }
+  .tarot-mini::after  { width: 16px; height: 16px; bottom: 4px; right: 4px; }
+  .tarot-corner-tr { width: 16px; height: 16px; top: 4px; right: 4px; }
+  .tarot-corner-bl { width: 16px; height: 16px; bottom: 4px; left: 4px; }
+}

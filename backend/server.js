@@ -14,6 +14,7 @@ import { connectDB } from './config/db.js';
 import { configureCloudinary } from './config/cloudinary.js';
 import { setupSocketHandlers } from './services/socketService.js';
 import { errorHandler } from './middleware/errorMiddleware.js';
+import universalRoutes from './routes/universalRoutes.js';
 
 import musicRoutes from './routes/musicRoutes.js';
 import airDrawRoutes from './routes/airDrawRoutes.js';
@@ -37,12 +38,38 @@ dotenv.config();
 const app = express();
 const httpServer = createServer(app);
 
+// CORS: Accept all frontend origins (localhost ports + Vercel URLs)
+const ALLOWED_ORIGINS = [
+  process.env.CLIENT_URL,
+  'http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002',
+  'http://localhost:3003', 'http://localhost:3004', 'http://localhost:3005',
+  'http://localhost:3006', 'http://localhost:3007', 'http://localhost:3008',
+  'http://localhost:3009', 'http://localhost:3010', 'http://localhost:5173',
+  'http://localhost:5174', 'http://localhost:5175', 'http://localhost:5176',
+  'http://localhost:5177', 'http://localhost:5178', 'http://localhost:5179',
+  'http://localhost:5180', 'http://localhost:5181', 'http://localhost:5182',
+].filter(Boolean);
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow requests with no origin (mobile apps, curl, etc.)
+    if (!origin) return callback(null, true);
+    // Allow any Vercel deployment
+    if (origin.endsWith('.vercel.app')) return callback(null, true);
+    // Allow listed origins
+    if (ALLOWED_ORIGINS.includes(origin)) return callback(null, true);
+    callback(null, true); // Allow all for hackathon
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+};
+
 const io = new Server(httpServer, {
-  cors: { origin: process.env.CLIENT_URL, methods: ['GET', 'POST'], credentials: true },
+  cors: corsOptions,
 });
 
 app.use(helmet({ crossOriginEmbedderPolicy: false, crossOriginResourcePolicy: { policy: 'cross-origin' } }));
-app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
+app.use(cors(corsOptions));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 app.use(cookieParser());
@@ -73,6 +100,9 @@ app.use('/api/globe', globeRoutes);
 app.use('/api/photobooth', photoboothRoutes);
 app.use('/api/fortune', fortuneRoutes);
 app.use('/api/game', gameRoutes);
+
+// Universal routes for multi-frontend system
+app.use('/api/v1', universalRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ success: true, message: '🚀 Dhindhora Anti-Gravity AI is LIVE!', timestamp: new Date() });
